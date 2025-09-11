@@ -43,28 +43,64 @@ export default function Landing() {
       name: "Free Trial",
       price: "$0",
       period: "7 days",
-      features: ["Full access", "All features", "No credit card"],
+      emoji: "🔹",
+      description: "Try all premium features free for 7 days.",
+      whoItsFor: "",
+      features: [
+        "Try all premium features free for 7 days",
+        "No credit card required (optional)",
+        "Cancel anytime before trial ends",
+        "Perfect for testing Zyra on your own store before upgrading"
+      ],
       popular: false
     },
     {
       name: "Starter",
       price: "$15",
       period: "per month",
-      features: ["100 products", "500 emails", "Basic analytics"],
+      emoji: "⭐",
+      description: "Small Shopify stores just getting started with AI.",
+      whoItsFor: "Small Shopify stores just getting started with AI.",
+      features: [
+        "Optimize up to 100 products with AI-generated descriptions",
+        "Send up to 500 AI-crafted emails per month (upsells, receipts)",
+        "Access to SEO title + meta tag generator",
+        "AI image alt-text generator for accessibility + SEO boost",
+        "Basic analytics dashboard (track optimized products + email open rates)"
+      ],
       popular: false
     },
     {
       name: "Pro",
       price: "$25", 
       period: "per month",
-      features: ["Unlimited products", "2000 emails", "500 SMS", "Advanced analytics"],
+      emoji: "🚀",
+      description: "Established stores with medium traffic looking to grow faster.",
+      whoItsFor: "Established stores with medium traffic looking to grow faster.",
+      features: [
+        "Unlimited product optimizations (no limits on AI copy)",
+        "Send up to 2,000 AI-crafted emails per month",
+        "Recover abandoned carts with 500 SMS reminders per month",
+        "Advanced analytics dashboard (email CTR, SMS conversion, keyword density)",
+        "Priority AI processing → faster response + reduced wait times"
+      ],
       popular: true
     },
     {
       name: "Growth",
       price: "$49",
-      period: "per month", 
-      features: ["Everything unlimited", "A/B testing", "Premium templates", "Priority support"],
+      period: "per month",
+      emoji: "🌟",
+      description: "High-volume stores that want maximum automation and advanced growth tools.",
+      whoItsFor: "High-volume stores that want maximum automation and advanced growth tools.",
+      features: [
+        "Unlimited everything → products, emails, and SMS recovery",
+        "Full analytics suite → keyword insights, revenue from emails/SMS, product optimization impact",
+        "A/B testing for AI-generated content → test multiple product descriptions, email subjects, and SMS messages",
+        "Premium template library → advanced email & SMS layouts designed to convert",
+        "Early access to new AI tools (before Starter/Pro users)",
+        "Priority support for faster help"
+      ],
       popular: false
     }
   ];
@@ -171,11 +207,11 @@ export default function Landing() {
             <p className="text-xl text-muted-foreground">Start with a 7-day free trial, upgrade anytime</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-16">
             {plans.map((plan, index) => (
               <Card 
                 key={index} 
-                className={`pricing-card border-0 relative ${plan.popular ? 'border-primary/50' : ''}`}
+                className={`pricing-card border-0 relative h-full ${plan.popular ? 'border-primary/50 scale-105' : ''}`}
                 data-testid={`card-plan-${index}`}
               >
                 {plan.popular && (
@@ -183,20 +219,28 @@ export default function Landing() {
                     <Badge className="bg-primary text-primary-foreground">Popular</Badge>
                   </div>
                 )}
-                <CardContent className="p-6">
+                <CardContent className="p-6 h-full flex flex-col">
                   <div className="text-center mb-6">
+                    <div className="text-3xl mb-2">{plan.emoji}</div>
                     <h3 className="text-xl font-semibold mb-2" data-testid={`text-plan-name-${index}`}>{plan.name}</h3>
                     <div className="text-3xl font-bold" data-testid={`text-plan-price-${index}`}>{plan.price}</div>
-                    <div className="text-sm text-muted-foreground" data-testid={`text-plan-period-${index}`}>{plan.period}</div>
+                    <div className="text-sm text-muted-foreground mb-3" data-testid={`text-plan-period-${index}`}>{plan.period}</div>
+                    {plan.whoItsFor && (
+                      <p className="text-sm text-primary/80 font-medium" data-testid={`text-plan-target-${index}`}>
+                        Who it's for: {plan.whoItsFor}
+                      </p>
+                    )}
                   </div>
-                  <ul className="space-y-3 mb-6">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center" data-testid={`text-plan-feature-${index}-${featureIndex}`}>
-                        <Check className="w-4 h-4 text-primary mr-2" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="flex-1">
+                    <ul className="space-y-3 mb-6">
+                      {plan.features.map((feature, featureIndex) => (
+                        <li key={featureIndex} className="flex items-start text-sm" data-testid={`text-plan-feature-${index}-${featureIndex}`}>
+                          <Check className="w-4 h-4 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                   <Link href="/auth/register">
                     <Button 
                       className={`w-full ${plan.popular ? 'gradient-button' : 'border border-border hover:bg-muted'}`}
@@ -209,6 +253,93 @@ export default function Landing() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          {/* Comparison Table */}
+          <div className="max-w-6xl mx-auto">
+            <h3 className="text-2xl font-bold text-center mb-8" data-testid="text-comparison-title">Feature Comparison</h3>
+            <Card className="gradient-card border-0">
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border">
+                        <th className="text-left p-4 font-semibold">Features</th>
+                        <th className="text-center p-4 font-semibold">Free Trial</th>
+                        <th className="text-center p-4 font-semibold">Starter</th>
+                        <th className="text-center p-4 font-semibold bg-primary/10">Pro</th>
+                        <th className="text-center p-4 font-semibold">Growth</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-sm">
+                      <tr className="border-b border-border">
+                        <td className="p-4 font-medium">Product Optimization</td>
+                        <td className="text-center p-4">Unlimited (7 days)</td>
+                        <td className="text-center p-4">100 products</td>
+                        <td className="text-center p-4 bg-primary/5">Unlimited</td>
+                        <td className="text-center p-4">Unlimited</td>
+                      </tr>
+                      <tr className="border-b border-border">
+                        <td className="p-4 font-medium">AI Emails per Month</td>
+                        <td className="text-center p-4">Unlimited (7 days)</td>
+                        <td className="text-center p-4">500</td>
+                        <td className="text-center p-4 bg-primary/5">2,000</td>
+                        <td className="text-center p-4">Unlimited</td>
+                      </tr>
+                      <tr className="border-b border-border">
+                        <td className="p-4 font-medium">SMS Recovery</td>
+                        <td className="text-center p-4">✓</td>
+                        <td className="text-center p-4">—</td>
+                        <td className="text-center p-4 bg-primary/5">500/month</td>
+                        <td className="text-center p-4">Unlimited</td>
+                      </tr>
+                      <tr className="border-b border-border">
+                        <td className="p-4 font-medium">Analytics</td>
+                        <td className="text-center p-4">Full access</td>
+                        <td className="text-center p-4">Basic</td>
+                        <td className="text-center p-4 bg-primary/5">Advanced</td>
+                        <td className="text-center p-4">Full suite</td>
+                      </tr>
+                      <tr className="border-b border-border">
+                        <td className="p-4 font-medium">AI Processing</td>
+                        <td className="text-center p-4">Standard</td>
+                        <td className="text-center p-4">Standard</td>
+                        <td className="text-center p-4 bg-primary/5">Priority</td>
+                        <td className="text-center p-4">Priority</td>
+                      </tr>
+                      <tr className="border-b border-border">
+                        <td className="p-4 font-medium">A/B Testing</td>
+                        <td className="text-center p-4">—</td>
+                        <td className="text-center p-4">—</td>
+                        <td className="text-center p-4 bg-primary/5">—</td>
+                        <td className="text-center p-4">✓</td>
+                      </tr>
+                      <tr className="border-b border-border">
+                        <td className="p-4 font-medium">Premium Templates</td>
+                        <td className="text-center p-4">—</td>
+                        <td className="text-center p-4">—</td>
+                        <td className="text-center p-4 bg-primary/5">—</td>
+                        <td className="text-center p-4">✓</td>
+                      </tr>
+                      <tr className="border-b border-border">
+                        <td className="p-4 font-medium">Early Access to New AI Tools</td>
+                        <td className="text-center p-4">—</td>
+                        <td className="text-center p-4">—</td>
+                        <td className="text-center p-4 bg-primary/5">—</td>
+                        <td className="text-center p-4">✓</td>
+                      </tr>
+                      <tr>
+                        <td className="p-4 font-medium">Support</td>
+                        <td className="text-center p-4">Standard</td>
+                        <td className="text-center p-4">Standard</td>
+                        <td className="text-center p-4 bg-primary/5">Standard</td>
+                        <td className="text-center p-4">Priority</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
