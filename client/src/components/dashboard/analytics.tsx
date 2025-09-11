@@ -76,7 +76,7 @@ export default function Analytics() {
     },
   ];
 
-  const topProducts = products?.slice(0, 3) || [];
+  const topProducts = (products as any)?.slice(0, 3) || [];
 
   return (
     <div className="space-y-8">
@@ -149,7 +149,7 @@ export default function Analytics() {
             <h3 className="text-xl font-semibold mb-6" data-testid="text-top-products-title">Top Performing Products</h3>
             <div className="space-y-4">
               {topProducts.length > 0 ? (
-                topProducts.map((product, index) => (
+                topProducts.map((product: any, index: number) => (
                   <div key={product.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg" data-testid={`card-top-product-${index}`}>
                     <div className="flex items-center">
                       <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mr-4">
@@ -240,7 +240,7 @@ export default function Analytics() {
               <div className="flex items-center justify-between">
                 <span className="text-sm">Optimized Products</span>
                 <span className="font-medium" data-testid="text-seo-optimized-products">
-                  {products?.filter(p => p.isOptimized).length || 0}
+                  {(products as any)?.filter((p: any) => p.isOptimized).length || 0}
                 </span>
               </div>
               <div className="flex items-center justify-between">

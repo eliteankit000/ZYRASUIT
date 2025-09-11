@@ -242,6 +242,13 @@ export class MemStorage implements IStorage {
     const newProduct: Product = {
       id,
       ...product,
+      description: product.description || null,
+      originalDescription: product.originalDescription || null,
+      category: product.category || null,
+      features: product.features || null,
+      tags: product.tags || null,
+      optimizedCopy: product.optimizedCopy || null,
+      shopifyId: product.shopifyId || null,
       isOptimized: false,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -271,6 +278,12 @@ export class MemStorage implements IStorage {
     const seo: SeoMeta = {
       id,
       ...seoMetaData,
+      seoTitle: seoMetaData.seoTitle || null,
+      metaDescription: seoMetaData.metaDescription || null,
+      keywords: seoMetaData.keywords || null,
+      optimizedTitle: seoMetaData.optimizedTitle || null,
+      optimizedMeta: seoMetaData.optimizedMeta || null,
+      seoScore: seoMetaData.seoScore || null,
       createdAt: new Date(),
     };
     this.seoMetas.set(id, seo);
@@ -296,6 +309,7 @@ export class MemStorage implements IStorage {
     const newCampaign: Campaign = {
       id,
       ...campaign,
+      subject: campaign.subject || null,
       status: "draft",
       sentCount: 0,
       openRate: 0,
@@ -330,10 +344,11 @@ export class MemStorage implements IStorage {
       id,
       ...analytic,
       date: analytic.date || new Date(),
+      metadata: analytic.metadata || null,
     };
     this.analyticsData.set(id, newAnalytic);
     return newAnalytic;
   }
 }
 
-export const storage = process.env.DATABASE_URL ? new DatabaseStorage() : new MemStorage();
+export const storage = new DatabaseStorage();

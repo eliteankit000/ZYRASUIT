@@ -53,7 +53,7 @@ export function useAuth() {
   const isLoggingOut = logoutMutation.isPending;
 
   return {
-    user: user?.user as User | undefined,
+    user: (user as any)?.user as User | undefined,
     isLoading,
     error,
     isAuthenticated,
