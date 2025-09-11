@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
@@ -202,10 +202,17 @@ export default function Auth() {
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="terms" 
-                    {...registerForm.register("terms")}
-                    data-testid="checkbox-terms"
+                  <Controller
+                    name="terms"
+                    control={registerForm.control}
+                    render={({ field }) => (
+                      <Checkbox 
+                        id="terms"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        data-testid="checkbox-terms"
+                      />
+                    )}
                   />
                   <Label htmlFor="terms" className="text-sm text-muted-foreground">
                     I agree to the <button type="button" className="text-primary hover:underline">Terms of Service</button> and <button type="button" className="text-primary hover:underline">Privacy Policy</button>
