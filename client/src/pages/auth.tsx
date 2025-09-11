@@ -46,9 +46,10 @@ export default function Auth() {
       const response = await apiRequest("POST", "/api/login", data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Immediately update the auth cache to prevent redirect issues
+      window.location.href = "/dashboard";
       toast({ title: "Welcome back!", description: "Successfully logged in." });
-      setLocation("/dashboard");
     },
     onError: (error: any) => {
       toast({
@@ -65,9 +66,10 @@ export default function Auth() {
       const response = await apiRequest("POST", "/api/register", registerData);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Immediately redirect to prevent auth timing issues
+      window.location.href = "/dashboard";
       toast({ title: "Welcome to Zyra!", description: "Your account has been created." });
-      setLocation("/dashboard");
     },
     onError: (error: any) => {
       toast({
