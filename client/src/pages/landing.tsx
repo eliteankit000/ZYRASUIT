@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Star, TrendingUp, ShoppingCart, Mail, Search, BarChart3, Cog, ArrowRight, Play, Check } from "lucide-react";
+import ResponsiveNavbar from "@/components/responsive-navbar";
 
 export default function Landing() {
   const features = [
@@ -108,33 +109,17 @@ export default function Landing() {
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-                <Zap className="w-6 h-6 text-primary-foreground" />
-              </div>
-              <span className="text-2xl font-bold text-foreground">Zyra</span>
-            </div>
-
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>
-              <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-              <Link href="/auth/login" className="text-muted-foreground hover:text-foreground transition-colors">Login</Link>
-              <Link href="/auth/register">
-                <Button className="gradient-button" data-testid="button-get-started">Get Started</Button>
-              </Link>
-            </div>
-
-            <button className="md:hidden text-foreground" data-testid="button-mobile-menu">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </nav>
+      <ResponsiveNavbar
+        navItems={[
+          { label: "Features", href: "#features", external: true },
+          { label: "Pricing", href: "#pricing", external: true },
+          { label: "Login", href: "/auth/login" }
+        ]}
+        actionButton={{
+          label: "Get Started",
+          href: "/auth/register"
+        }}
+      />
 
       {/* Hero Section */}
       <section className="pt-24 pb-16 px-6">
