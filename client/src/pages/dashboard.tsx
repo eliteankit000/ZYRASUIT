@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,11 +7,28 @@ import AIGenerator from "@/components/dashboard/ai-generator";
 import SEOTools from "@/components/dashboard/seo-tools";
 import Analytics from "@/components/dashboard/analytics";
 import { useAuth } from "@/lib/auth";
-import { Zap, TrendingUp, ShoppingCart, Eye, RotateCcw, Plus, Bell } from "lucide-react";
+import { Zap, TrendingUp, ShoppingCart, Eye, RotateCcw, Plus, Bell, Menu } from "lucide-react";
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Handle responsive behavior - close sidebar on mobile by default
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+
+    handleResize(); // Check initial size
+    window.addEventListener('resize', handleResize);
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const stats = [
     {
@@ -225,16 +242,35 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen flex">
-      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} user={user} />
+      <Sidebar 
+        activeTab={activeTab} 
+        onTabChange={setActiveTab} 
+        user={user} 
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
       {/* Main Content */}
-      <div className="flex-1 ml-64">
+      <div className={`flex-1 transition-all duration-300 ease-in-out ${
+        sidebarOpen ? 'lg:ml-64' : 'ml-0'
+      }`}>
         {/* Top Bar */}
         <header className="bg-card/50 backdrop-blur-sm border-b border-border px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold" data-testid="text-page-title">{pageTitle.title}</h1>
-              <p className="text-muted-foreground" data-testid="text-page-subtitle">{pageTitle.subtitle}</p>
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="hover:bg-muted"
+                data-testid="button-toggle-sidebar"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold" data-testid="text-page-title">{pageTitle.title}</h1>
+                <p className="text-muted-foreground" data-testid="text-page-subtitle">{pageTitle.subtitle}</p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <Button className="gradient-button" data-testid="button-optimize-all">
