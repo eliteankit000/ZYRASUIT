@@ -164,43 +164,43 @@ export default function Dashboard() {
         return (
           <div className="space-y-8">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {stats.map((stat, index) => (
                 <Card key={index} className="stat-card border-0" data-testid={`card-stat-${index}`}>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
                         {stat.icon}
                       </div>
                       <Badge 
                         variant={stat.positive ? "default" : "destructive"}
-                        className={stat.positive ? "bg-green-400/10 text-green-400" : "bg-orange-400/10 text-orange-400"}
+                        className={`${stat.positive ? "bg-green-400/10 text-green-400" : "bg-orange-400/10 text-orange-400"} text-xs sm:text-sm`}
                       >
                         {stat.change}
                       </Badge>
                     </div>
-                    <div className="text-2xl font-bold mb-1" data-testid={`text-stat-value-${index}`}>{stat.value}</div>
-                    <div className="text-sm text-muted-foreground" data-testid={`text-stat-title-${index}`}>{stat.title}</div>
+                    <div className="text-xl sm:text-2xl font-bold mb-1" data-testid={`text-stat-value-${index}`}>{stat.value}</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground" data-testid={`text-stat-title-${index}`}>{stat.title}</div>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
             {/* Quick Actions Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {quickActions.map((action, index) => (
                 <Card key={index} className="gradient-card border-0" data-testid={`card-quick-action-${index}`}>
-                  <CardContent className="p-6">
-                    <div className="flex items-center mb-4">
-                      <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center mr-3 text-primary">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-center mb-3 sm:mb-4">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/20 rounded-lg flex items-center justify-center mr-2 sm:mr-3 text-primary">
                         {action.icon}
                       </div>
-                      <h3 className="text-lg font-semibold" data-testid={`text-quick-action-title-${index}`}>{action.title}</h3>
+                      <h3 className="text-base sm:text-lg font-semibold" data-testid={`text-quick-action-title-${index}`}>{action.title}</h3>
                     </div>
-                    <p className="text-muted-foreground mb-4" data-testid={`text-quick-action-description-${index}`}>{action.description}</p>
+                    <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4" data-testid={`text-quick-action-description-${index}`}>{action.description}</p>
                     <Button
                       onClick={action.action}
-                      className={`w-full ${action.primary ? 'gradient-button' : 'border border-border hover:bg-muted'}`}
+                      className={`w-full text-sm sm:text-base ${action.primary ? 'gradient-button' : 'border border-border hover:bg-muted'}`}
                       variant={action.primary ? "default" : "outline"}
                       data-testid={`button-quick-action-${index}`}
                     >
@@ -213,20 +213,21 @@ export default function Dashboard() {
 
             {/* Recent Activity */}
             <Card className="gradient-card border-0">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-semibold mb-6" data-testid="text-recent-activity-title">Recent Activity</h3>
-                <div className="space-y-4">
+              <CardContent className="p-4 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6" data-testid="text-recent-activity-title">Recent Activity</h3>
+                <div className="space-y-3 sm:space-y-4">
                   {activities.map((activity, index) => (
-                    <div key={index} className="flex items-center p-4 bg-muted/30 rounded-lg" data-testid={`card-activity-${index}`}>
-                      <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center mr-4">
+                    <div key={index} className="flex items-center p-3 sm:p-4 bg-muted/30 rounded-lg" data-testid={`card-activity-${index}`}>
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/20 rounded-lg flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
                         {activity.icon}
                       </div>
-                      <div className="flex-1">
-                        <div className="font-medium" data-testid={`text-activity-description-${index}`}>{activity.description}</div>
-                        <div className="text-sm text-muted-foreground" data-testid={`text-activity-time-${index}`}>{activity.time}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm sm:text-base" data-testid={`text-activity-description-${index}`}>{activity.description}</div>
+                        <div className="text-xs sm:text-sm text-muted-foreground" data-testid={`text-activity-time-${index}`}>{activity.time}</div>
                       </div>
-                      <Button variant="ghost" size="sm" className="text-primary hover:underline" data-testid={`button-activity-view-${index}`}>
-                        View
+                      <Button variant="ghost" size="sm" className="text-primary hover:underline text-xs sm:text-sm flex-shrink-0" data-testid={`button-activity-view-${index}`}>
+                        <span className="hidden sm:inline">View</span>
+                        <span className="sm:hidden">•••</span>
                       </Button>
                     </div>
                   ))}
@@ -255,42 +256,43 @@ export default function Dashboard() {
         sidebarOpen ? 'lg:ml-64' : 'ml-0'
       }`}>
         {/* Top Bar */}
-        <header className="bg-card/50 backdrop-blur-sm border-b border-border px-6 py-4">
+        <header className="bg-card/50 backdrop-blur-sm border-b border-border px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="hover:bg-muted"
+                className="hover:bg-muted flex-shrink-0"
                 data-testid="button-toggle-sidebar"
               >
-                <Menu className="w-5 h-5" />
+                <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
-              <div>
-                <h1 className="text-2xl font-bold" data-testid="text-page-title">{pageTitle.title}</h1>
-                <p className="text-muted-foreground" data-testid="text-page-subtitle">{pageTitle.subtitle}</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold truncate" data-testid="text-page-title">{pageTitle.title}</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground truncate" data-testid="text-page-subtitle">{pageTitle.subtitle}</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <Button className="gradient-button" data-testid="button-optimize-all">
-                <Zap className="w-4 h-4 mr-2" />
-                Optimize All
+            <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 flex-shrink-0">
+              <Button className="gradient-button hidden sm:flex text-sm lg:text-base px-3 sm:px-4" data-testid="button-optimize-all">
+                <Zap className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden md:inline">Optimize All</span>
+                <span className="md:hidden">Optimize</span>
               </Button>
-              <Button variant="outline" data-testid="button-add-product">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button variant="outline" className="hidden md:flex text-sm lg:text-base px-3 sm:px-4" data-testid="button-add-product">
+                <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Add Product
               </Button>
               <Button variant="ghost" size="icon" className="relative" data-testid="button-notifications">
-                <Bell className="w-5 h-5" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full"></span>
+                <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-destructive rounded-full"></span>
               </Button>
             </div>
           </div>
         </header>
 
         {/* Dashboard Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {renderTabContent()}
         </div>
       </div>
