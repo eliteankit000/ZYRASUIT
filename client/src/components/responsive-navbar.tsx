@@ -159,11 +159,31 @@ export default function ResponsiveNavbar({
   const renderActionButton = (isMobile: boolean = false) => {
     if (!actionButton) return null;
 
-    const content = (
+    if (actionButton.href) {
+      return (
+        <Button
+          asChild
+          className={cn(
+            "gradient-button",
+            isMobile ? "w-full text-base sm:text-lg py-3" : ""
+          )}
+          data-testid={`action-button-${actionButton.label.toLowerCase().replace(/\s+/g, '-')}`}
+        >
+          <Link
+            href={actionButton.href}
+            onClick={() => isMobile && closeMenu()}
+          >
+            {actionButton.label}
+          </Link>
+        </Button>
+      );
+    }
+
+    return (
       <Button
         className={cn(
           "gradient-button",
-          isMobile ? "w-full text-lg py-3" : ""
+          isMobile ? "w-full text-base sm:text-lg py-3" : ""
         )}
         onClick={() => {
           if (actionButton.onClick) {
@@ -178,19 +198,6 @@ export default function ResponsiveNavbar({
         {actionButton.label}
       </Button>
     );
-
-    if (actionButton.href) {
-      return (
-        <Link
-          href={actionButton.href}
-          onClick={() => isMobile && closeMenu()}
-        >
-          {content}
-        </Link>
-      );
-    }
-
-    return content;
   };
 
   return (
@@ -198,37 +205,37 @@ export default function ResponsiveNavbar({
       "fixed top-0 w-full z-50 bg-black/20 backdrop-blur-md border-b border-border",
       className
     )}>
-      <div className="container mx-auto px-6 py-4">
+      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             {logo.href ? (
               <Link
                 href={logo.href}
-                className="flex items-center space-x-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
+                className="flex items-center space-x-2 sm:space-x-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
                 data-testid="nav-logo"
               >
                 {logo.icon && (
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
                     {logo.icon}
                   </div>
                 )}
-                <span className="text-2xl font-bold text-foreground">{logo.text}</span>
+                <span className="text-xl sm:text-2xl font-bold text-foreground">{logo.text}</span>
               </Link>
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2 sm:space-x-3">
                 {logo.icon && (
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
                     {logo.icon}
                   </div>
                 )}
-                <span className="text-2xl font-bold text-foreground">{logo.text}</span>
+                <span className="text-xl sm:text-2xl font-bold text-foreground">{logo.text}</span>
               </div>
             )}
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {navItems.map((item, index) => renderNavItem(item, index, false))}
             {renderActionButton(false)}
           </div>
@@ -264,7 +271,7 @@ export default function ResponsiveNavbar({
           role="menu"
           aria-labelledby="mobile-menu"
         >
-          <div className="container mx-auto px-6 py-6 space-y-2">
+          <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-2">
             {navItems.map((item, index) => (
               <div key={index} role="menuitem">
                 {renderNavItem(item, index, true)}
