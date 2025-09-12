@@ -89,67 +89,67 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
+      <div className="max-w-sm sm:max-w-md w-full">
         <Card className="gradient-card border-0" data-testid="card-auth">
-          <CardContent className="p-8">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Zap className="w-8 h-8 text-primary-foreground" />
+          <CardContent className="p-6 sm:p-8">
+            <div className="text-center mb-6 sm:mb-8">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-primary-foreground" />
               </div>
-              <h2 className="text-3xl font-bold" data-testid="text-auth-title">
+              <h2 className="text-2xl sm:text-3xl font-bold" data-testid="text-auth-title">
                 {mode === 'login' ? 'Welcome Back' : 'Get Started'}
               </h2>
-              <p className="text-muted-foreground" data-testid="text-auth-subtitle">
+              <p className="text-sm sm:text-base text-muted-foreground" data-testid="text-auth-subtitle">
                 {mode === 'login' ? 'Sign in to your Zyra account' : 'Create your free Zyra account'}
               </p>
             </div>
 
             {mode === 'login' ? (
-              <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6">
+              <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4 sm:space-y-6">
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-sm sm:text-base">Email</Label>
                   <Input
                     id="email"
                     type="email"
-                    className="form-input mt-2"
+                    className="form-input mt-1 sm:mt-2 text-sm sm:text-base"
                     placeholder="Enter your email"
                     {...loginForm.register("email")}
                     data-testid="input-email"
                   />
                   {loginForm.formState.errors.email && (
-                    <p className="text-destructive text-sm mt-1">{loginForm.formState.errors.email.message}</p>
+                    <p className="text-destructive text-xs sm:text-sm mt-1">{loginForm.formState.errors.email.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-sm sm:text-base">Password</Label>
                   <Input
                     id="password"
                     type="password"
-                    className="form-input mt-2"
+                    className="form-input mt-1 sm:mt-2 text-sm sm:text-base"
                     placeholder="Enter your password"
                     {...loginForm.register("password")}
                     data-testid="input-password"
                   />
                   {loginForm.formState.errors.password && (
-                    <p className="text-destructive text-sm mt-1">{loginForm.formState.errors.password.message}</p>
+                    <p className="text-destructive text-xs sm:text-sm mt-1">{loginForm.formState.errors.password.message}</p>
                   )}
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Checkbox id="remember" />
-                    <Label htmlFor="remember" className="text-sm text-muted-foreground">Remember me</Label>
+                    <Label htmlFor="remember" className="text-xs sm:text-sm text-muted-foreground">Remember me</Label>
                   </div>
-                  <button type="button" className="text-sm text-primary hover:underline">
+                  <button type="button" className="text-xs sm:text-sm text-primary hover:underline">
                     Forgot password?
                   </button>
                 </div>
 
                 <Button 
                   type="submit" 
-                  className="w-full gradient-button"
+                  className="w-full gradient-button text-sm sm:text-base py-2 sm:py-3"
                   disabled={loginMutation.isPending}
                   data-testid="button-login"
                 >
@@ -157,53 +157,53 @@ export default function Auth() {
                 </Button>
               </form>
             ) : (
-              <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-6">
+              <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4 sm:space-y-6">
                 <div>
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="fullName" className="text-sm sm:text-base">Full Name</Label>
                   <Input
                     id="fullName"
                     type="text"
-                    className="form-input mt-2"
+                    className="form-input mt-1 sm:mt-2 text-sm sm:text-base"
                     placeholder="Enter your full name"
                     {...registerForm.register("fullName")}
                     data-testid="input-fullname"
                   />
                   {registerForm.formState.errors.fullName && (
-                    <p className="text-destructive text-sm mt-1">{registerForm.formState.errors.fullName.message}</p>
+                    <p className="text-destructive text-xs sm:text-sm mt-1">{registerForm.formState.errors.fullName.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-sm sm:text-base">Email</Label>
                   <Input
                     id="email"
                     type="email"
-                    className="form-input mt-2"
+                    className="form-input mt-1 sm:mt-2 text-sm sm:text-base"
                     placeholder="Enter your email"
                     {...registerForm.register("email")}
                     data-testid="input-email"
                   />
                   {registerForm.formState.errors.email && (
-                    <p className="text-destructive text-sm mt-1">{registerForm.formState.errors.email.message}</p>
+                    <p className="text-destructive text-xs sm:text-sm mt-1">{registerForm.formState.errors.email.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-sm sm:text-base">Password</Label>
                   <Input
                     id="password"
                     type="password"
-                    className="form-input mt-2"
+                    className="form-input mt-1 sm:mt-2 text-sm sm:text-base"
                     placeholder="Create a password"
                     {...registerForm.register("password")}
                     data-testid="input-password"
                   />
                   {registerForm.formState.errors.password && (
-                    <p className="text-destructive text-sm mt-1">{registerForm.formState.errors.password.message}</p>
+                    <p className="text-destructive text-xs sm:text-sm mt-1">{registerForm.formState.errors.password.message}</p>
                   )}
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-start space-x-2">
                   <Controller
                     name="terms"
                     control={registerForm.control}
@@ -212,21 +212,22 @@ export default function Auth() {
                         id="terms"
                         checked={field.value}
                         onCheckedChange={field.onChange}
+                        className="mt-0.5"
                         data-testid="checkbox-terms"
                       />
                     )}
                   />
-                  <Label htmlFor="terms" className="text-sm text-muted-foreground">
+                  <Label htmlFor="terms" className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                     I agree to the <button type="button" className="text-primary hover:underline">Terms of Service</button> and <button type="button" className="text-primary hover:underline">Privacy Policy</button>
                   </Label>
                 </div>
                 {registerForm.formState.errors.terms && (
-                  <p className="text-destructive text-sm">{registerForm.formState.errors.terms.message}</p>
+                  <p className="text-destructive text-xs sm:text-sm">{registerForm.formState.errors.terms.message}</p>
                 )}
 
                 <Button 
                   type="submit" 
-                  className="w-full gradient-button"
+                  className="w-full gradient-button text-sm sm:text-base py-2 sm:py-3"
                   disabled={registerMutation.isPending}
                   data-testid="button-register"
                 >
@@ -235,8 +236,8 @@ export default function Auth() {
               </form>
             )}
 
-            <div className="mt-6 text-center">
-              <p className="text-muted-foreground">
+            <div className="mt-4 sm:mt-6 text-center">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
                 <button 
                   onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
