@@ -132,11 +132,11 @@ export default function Landing() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-8 sm:mb-12 px-4 sm:px-0">
-            <Link href="/auth/register" className="w-full sm:w-auto">
-              <Button className="gradient-button w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold" data-testid="button-start-trial">
+            <Button asChild className="gradient-button w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold" data-testid="button-start-trial">
+              <Link href="/auth/register">
                 Start 7-Day Free Trial
-              </Button>
-            </Link>
+              </Link>
+            </Button>
             <Button variant="outline" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold" data-testid="button-watch-demo">
               <Play className="w-4 h-4 mr-2" />
               Watch Demo
@@ -196,7 +196,7 @@ export default function Landing() {
             {plans.map((plan, index) => (
               <Card 
                 key={index} 
-                className={`pricing-card border-0 relative h-full ${plan.popular ? 'border-primary/50 scale-105' : ''}`}
+                className={`pricing-card border-0 relative h-full ${plan.popular ? 'border-primary/50 lg:scale-105' : ''}`}
                 data-testid={`card-plan-${index}`}
               >
                 {plan.popular && (
@@ -226,15 +226,16 @@ export default function Landing() {
                       ))}
                     </ul>
                   </div>
-                  <Link href="/auth/register">
-                    <Button 
-                      className={`w-full ${plan.popular ? 'gradient-button' : 'border border-border hover:bg-muted'}`}
-                      variant={plan.popular ? "default" : "outline"}
-                      data-testid={`button-choose-plan-${index}`}
-                    >
+                  <Button 
+                    asChild
+                    className={`w-full ${plan.popular ? 'gradient-button' : 'border border-border hover:bg-muted'}`}
+                    variant={plan.popular ? "default" : "outline"}
+                    data-testid={`button-choose-plan-${index}`}
+                  >
+                    <Link href="/auth/register">
                       {index === 0 ? "Start Trial" : "Choose Plan"}
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -334,12 +335,12 @@ export default function Landing() {
         <div className="container mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4" data-testid="text-cta-title">Ready to Transform Your Shopify Store?</h2>
           <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 px-4 sm:px-0">Join thousands of merchants already using Zyra to boost their sales</p>
-          <Link href="/auth/register" className="inline-block">
-            <Button className="gradient-button w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold" data-testid="button-cta-start">
+          <Button asChild className="gradient-button w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold" data-testid="button-cta-start">
+            <Link href="/auth/register">
               Start Your Free Trial Today
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </section>
 
