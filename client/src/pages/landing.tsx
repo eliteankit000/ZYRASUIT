@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Zap, Star, TrendingUp, ShoppingCart, Mail, Search, BarChart3, Cog, ArrowRight, Play, Check } from "lucide-react";
+import { Zap, Star, TrendingUp, ShoppingCart, Mail, Search, BarChart3, Cog, ArrowRight, Play, Check, Gift, Crown, Award } from "lucide-react";
 import ResponsiveNavbar from "@/components/responsive-navbar";
 
 export default function Landing() {
@@ -44,7 +44,7 @@ export default function Landing() {
       name: "Free Trial",
       price: "$0",
       period: "7 days",
-      emoji: "🔹",
+      icon: <Gift className="w-8 h-8" />,
       description: "Try all premium features free for 7 days.",
       whoItsFor: "",
       features: [
@@ -59,7 +59,7 @@ export default function Landing() {
       name: "Starter",
       price: "$15",
       period: "per month",
-      emoji: "⭐",
+      icon: <Zap className="w-8 h-8" />,
       description: "Small Shopify stores just getting started with AI.",
       whoItsFor: "Small Shopify stores just getting started with AI.",
       features: [
@@ -75,7 +75,7 @@ export default function Landing() {
       name: "Pro",
       price: "$25", 
       period: "per month",
-      emoji: "🚀",
+      icon: <Crown className="w-8 h-8" />,
       description: "Established stores with medium traffic looking to grow faster.",
       whoItsFor: "Established stores with medium traffic looking to grow faster.",
       features: [
@@ -91,7 +91,7 @@ export default function Landing() {
       name: "Growth",
       price: "$49",
       period: "per month",
-      emoji: "🌟",
+      icon: <Award className="w-8 h-8" />,
       description: "High-volume stores that want maximum automation and advanced growth tools.",
       whoItsFor: "High-volume stores that want maximum automation and advanced growth tools.",
       features: [
@@ -206,7 +206,7 @@ export default function Landing() {
                 )}
                 <CardContent className="p-4 sm:p-6 h-full flex flex-col">
                   <div className="text-center mb-4 sm:mb-6">
-                    <div className="text-2xl sm:text-3xl mb-2">{plan.emoji}</div>
+                    <div className="flex justify-center text-primary mb-2">{plan.icon}</div>
                     <h3 className="text-lg sm:text-xl font-semibold mb-2" data-testid={`text-plan-name-${index}`}>{plan.name}</h3>
                     <div className="text-2xl sm:text-3xl font-bold" data-testid={`text-plan-price-${index}`}>{plan.price}</div>
                     <div className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3" data-testid={`text-plan-period-${index}`}>{plan.period}</div>

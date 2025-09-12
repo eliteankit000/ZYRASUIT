@@ -1,14 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check } from "lucide-react";
+import { Check, Gift, Zap, Crown, Award } from "lucide-react";
 
 const plans = [
   {
     name: "Free Trial",
     price: "$0",
     period: "7 days",
-    emoji: "🔹",
+    icon: <Gift className="w-8 h-8" />,
     description: "Try all premium features free for 7 days.",
     features: [
       "Try all premium features free for 7 days",
@@ -22,7 +22,7 @@ const plans = [
     name: "Starter",
     price: "$15",
     period: "per month",
-    emoji: "⭐",
+    icon: <Zap className="w-8 h-8" />,
     description: "Small Shopify stores just getting started with AI.",
     features: [
       "Optimize up to 100 products with AI-generated descriptions",
@@ -37,7 +37,7 @@ const plans = [
     name: "Pro",
     price: "$25", 
     period: "per month",
-    emoji: "🚀",
+    icon: <Crown className="w-8 h-8" />,
     description: "Established stores with medium traffic looking to grow faster.",
     features: [
       "Unlimited product optimizations (no limits on AI copy)",
@@ -52,7 +52,7 @@ const plans = [
     name: "Growth",
     price: "$49",
     period: "per month",
-    emoji: "🌟",
+    icon: <Award className="w-8 h-8" />,
     description: "High-volume stores that want maximum automation and advanced growth tools.",
     features: [
       "Unlimited everything → products, emails, and SMS recovery",
@@ -98,7 +98,7 @@ export default function SubscriptionPlans({ currentPlan }: SubscriptionPlansProp
             )}
             
             <CardHeader className="text-center">
-              <div className="text-3xl sm:text-4xl mb-2">{plan.emoji}</div>
+              <div className="flex justify-center text-primary mb-2">{plan.icon}</div>
               <CardTitle className="text-lg sm:text-xl font-bold" data-testid={`text-plan-name-${index}`}>
                 {plan.name}
               </CardTitle>
