@@ -6,6 +6,7 @@ import Sidebar from "@/components/dashboard/sidebar";
 import AIGenerator from "@/components/dashboard/ai-generator";
 import SEOTools from "@/components/dashboard/seo-tools";
 import Analytics from "@/components/dashboard/analytics";
+import Profile from "@/components/dashboard/profile";
 import { useAuth } from "@/lib/auth";
 import { Zap, TrendingUp, ShoppingCart, Eye, RotateCcw, Plus, Bell, Menu } from "lucide-react";
 
@@ -111,6 +112,7 @@ export default function Dashboard() {
       analytics: { title: "Analytics", subtitle: "Track your optimization performance" },
       campaigns: { title: "Campaigns", subtitle: "Manage your email and SMS campaigns" },
       products: { title: "Products", subtitle: "Manage your product catalog" },
+      profile: { title: "Profile", subtitle: "Manage your account and subscription" },
       settings: { title: "Settings", subtitle: "Configure your account and integrations" },
     };
     return titles[activeTab as keyof typeof titles] || titles.overview;
@@ -148,6 +150,8 @@ export default function Dashboard() {
             </Button>
           </div>
         );
+      case "profile":
+        return <Profile />;
       case "settings":
         return (
           <div className="text-center py-16">
