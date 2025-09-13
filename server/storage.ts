@@ -33,6 +33,7 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(userId: string, updates: Partial<User>): Promise<User>;
   updateUserStripeInfo(userId: string, customerId: string, subscriptionId: string): Promise<User>;
 
   // Product methods
@@ -200,6 +201,10 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
+  async updateUser(userId: string, updates: Partial<User>): Promise<User> {
+    throw new Error("User updates not available in DatabaseStorage - use MemStorage");
+  }
+
   // Dashboard methods - stub implementations since we're using MemStorage for dashboard
   async getDashboardData(userId: string): Promise<any> {
     throw new Error("Dashboard data not available in DatabaseStorage - use MemStorage");
@@ -263,6 +268,14 @@ export class MemStorage implements IStorage {
     };
     this.users.set(id, user);
     return user;
+  }
+
+  async updateUser(userId: string, updates: Partial<User>): Promise<User> {
+    const user = this.users.get(userId);
+    if (!user) throw new Error("User not found");
+    const updatedUser = { ...user, ...updates };
+    this.users.set(userId, updatedUser);
+    return updatedUser;
   }
 
   async updateUserStripeInfo(userId: string, customerId: string, subscriptionId: string): Promise<User> {

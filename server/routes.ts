@@ -7,24 +7,13 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { insertUserSchema } from "@shared/schema";
 import { storage } from "./storage";
 import { 
-  createUser, 
-  getUserByEmail, 
-  getUserProfile,
-  updateUserProfile,
+  testDatabaseConnection,
+  seedSubscriptionPlans,
   getSubscriptionPlans,
   updateUserSubscription,
   saveSession,
   getSession,
-  deleteSession,
-  testDatabaseConnection,
-  seedSubscriptionPlans,
-  getUserDashboardData,
-  initializeUserRealtimeData,
-  generateSampleMetrics,
-  trackToolAccess,
-  createActivityLog,
-  incrementUsageStat,
-  updateRealtimeMetric
+  deleteSession
 } from "./db";
 import OpenAI from "openai";
 import Stripe from "stripe";
@@ -359,7 +348,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User profile routes
   app.get("/api/profile", requireAuth, async (req, res) => {
     try {
-      const profile = await getUserProfile(req.user!.id);
+      const profile = await storage.getUser(req.user!.id);
       if (!profile) {
         return res.status(404).json({ message: "Profile not found" });
       }
@@ -373,13 +362,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/profile", requireAuth, async (req, res) => {
     try {
       const { name, bio, profileImage, preferences } = req.body;
-      const profile = await updateUserProfile(req.user!.id, {
-        name,
-        bio,
-        profileImage,
-        preferences
+      const updatedUser = await storage.updateUser(req.user!.id, {
+        fullName: name
       });
-      res.json(profile);
+      res.json(updatedUser);
     } catch (error: any) {
       console.error("Update profile error:", error);
       res.status(500).json({ message: "Failed to update profile" });
@@ -498,13 +484,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertUserSchema.parse(req.body);
       
       // Check if user already exists using new helper
-      const existingUser = await getUserByEmail(validatedData.email);
+      const existingUser = await storage.getUserByEmail(validatedData.email);
       if (existingUser) {
         return res.status(400).json({ message: "User already exists" });
       }
 
       // Create user using new helper (automatically creates profile)
-      const user = await createUser(validatedData);
+      const user = await storage.createUser(validatedData);
       
       // Log the user in
       req.login(user, (err) => {
