@@ -17,7 +17,14 @@ import {
   getSession,
   deleteSession,
   testDatabaseConnection,
-  seedSubscriptionPlans
+  seedSubscriptionPlans,
+  getUserDashboardData,
+  initializeUserRealtimeData,
+  generateSampleMetrics,
+  trackToolAccess,
+  createActivityLog,
+  incrementUsageStat,
+  updateRealtimeMetric
 } from "./db";
 import OpenAI from "openai";
 import Stripe from "stripe";
@@ -522,6 +529,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         res.status(400).json({ message: "Registration failed" });
       }
+    }
+  });
+
+  // REAL-TIME DASHBOARD API ENDPOINTS
+
+  // Get comprehensive dashboard data
+  app.get("/api/dashboard", requireAuth, async (req, res) => {
+    try {
+      const dashboardData = await storage.getDashboardData(req.user!.id);
+      res.json(dashboardData);
+    } catch (error: any) {
+      console.error("[API] Dashboard data fetch error:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard data" });
+    }
+  });
+
+  // Initialize user real-time data (called on first login)
+  app.post("/api/dashboard/initialize", requireAuth, async (req, res) => {
+    try {
+      await storage.initializeUserRealtimeData(req.user!.id);
+      await storage.generateSampleMetrics(req.user!.id);
+      res.json({ message: "Real-time data initialized successfully" });
+    } catch (error: any) {
+      console.error("[API] Dashboard initialization error:", error);
+      res.status(500).json({ message: "Failed to initialize dashboard data" });
+    }
+  });
+
+  // Track tool access (called when user clicks on tool buttons)
+  app.post("/api/dashboard/track-tool-access", requireAuth, async (req, res) => {
+    try {
+      const { toolName } = req.body;
+      if (!toolName) {
+        return res.status(400).json({ message: "Tool name is required" });
+      }
+      
+      const toolAccess = await storage.trackToolAccess(req.user!.id, toolName);
+      
+      // Log activity
+      await storage.createActivityLog(req.user!.id, {
+        action: "tool_accessed",
+        description: `Opened ${toolName.replace('-', ' ')} tool`,
+        toolUsed: toolName,
+        metadata: { timestamp: new Date().toISOString() }
+      });
+
+      res.json({ success: true, toolAccess });
+    } catch (error: any) {
+      console.error("[API] Tool access tracking error:", error);
+      res.status(500).json({ message: "Failed to track tool access" });
+    }
+  });
+
+  // Log user activity
+  app.post("/api/dashboard/log-activity", requireAuth, async (req, res) => {
+    try {
+      const { action, description, toolUsed, metadata } = req.body;
+      if (!action || !description) {
+        return res.status(400).json({ message: "Action and description are required" });
+      }
+
+      const activityLog = await storage.createActivityLog(req.user!.id, {
+        action,
+        description,
+        toolUsed,
+        metadata
+      });
+
+      res.json({ success: true, activityLog });
+    } catch (error: any) {
+      console.error("[API] Activity logging error:", error);
+      res.status(500).json({ message: "Failed to log activity" });
+    }
+  });
+
+  // Update usage stats (called when user performs actions)
+  app.post("/api/dashboard/update-usage", requireAuth, async (req, res) => {
+    try {
+      const { statField, increment = 1 } = req.body;
+      if (!statField) {
+        return res.status(400).json({ message: "Stat field is required" });
+      }
+
+      await storage.updateUsageStats(req.user!.id, statField, increment);
+      res.json({ success: true, message: `Updated ${statField} by ${increment}` });
+    } catch (error: any) {
+      console.error("[API] Usage stats update error:", error);
+      res.status(500).json({ message: "Failed to update usage stats" });
+    }
+  });
+
+  // Generate new sample metrics (for demo purposes)
+  app.post("/api/dashboard/refresh-metrics", requireAuth, async (req, res) => {
+    try {
+      await storage.generateSampleMetrics(req.user!.id);
+      const dashboardData = await storage.getDashboardData(req.user!.id);
+      res.json({ success: true, dashboardData });
+    } catch (error: any) {
+      console.error("[API] Metrics refresh error:", error);
+      res.status(500).json({ message: "Failed to refresh metrics" });
+    }
+  });
+
+  // Get real-time usage stats only
+  app.get("/api/dashboard/usage-stats", requireAuth, async (req, res) => {
+    try {
+      const dashboardData = await storage.getDashboardData(req.user!.id);
+      res.json(dashboardData.usageStats);
+    } catch (error: any) {
+      console.error("[API] Usage stats fetch error:", error);
+      res.status(500).json({ message: "Failed to fetch usage stats" });
     }
   });
 

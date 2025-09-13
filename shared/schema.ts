@@ -97,6 +97,50 @@ export const sessions = pgTable("sessions", {
   createdAt: timestamp("created_at").default(sql`NOW()`),
 });
 
+export const usageStats = pgTable("usage_stats", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  totalRevenue: integer("total_revenue").default(0),
+  totalOrders: integer("total_orders").default(0),
+  conversionRate: integer("conversion_rate").default(0), // stored as percentage * 100
+  cartRecoveryRate: integer("cart_recovery_rate").default(0), // stored as percentage * 100
+  productsOptimized: integer("products_optimized").default(0),
+  emailsSent: integer("emails_sent").default(0),
+  smsSent: integer("sms_sent").default(0),
+  aiGenerationsUsed: integer("ai_generations_used").default(0),
+  seoOptimizationsUsed: integer("seo_optimizations_used").default(0),
+  lastUpdated: timestamp("last_updated").default(sql`NOW()`),
+});
+
+export const activityLogs = pgTable("activity_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  action: text("action").notNull(), // 'generated_product', 'optimized_seo', 'sent_campaign', etc
+  description: text("description").notNull(),
+  metadata: jsonb("metadata"), // store additional data like product name, campaign id, etc
+  toolUsed: text("tool_used"), // 'ai-generator', 'seo-tools', 'campaigns', etc
+  createdAt: timestamp("created_at").default(sql`NOW()`),
+});
+
+export const toolsAccess = pgTable("tools_access", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  toolName: text("tool_name").notNull(), // 'ai-generator', 'seo-tools', 'analytics', etc
+  accessCount: integer("access_count").default(1),
+  lastAccessed: timestamp("last_accessed").default(sql`NOW()`),
+  firstAccessed: timestamp("first_accessed").default(sql`NOW()`),
+});
+
+export const realtimeMetrics = pgTable("realtime_metrics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  metricName: text("metric_name").notNull(), // 'revenue_change', 'orders_change', etc
+  value: text("value").notNull(),
+  changePercent: text("change_percent"),
+  isPositive: boolean("is_positive").default(true),
+  timestamp: timestamp("timestamp").default(sql`NOW()`),
+});
+
 export const analytics = pgTable("analytics", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").references(() => users.id).notNull(),
@@ -149,6 +193,25 @@ export const insertSessionSchema = createInsertSchema(sessions).omit({
   createdAt: true,
 });
 
+export const insertUsageStatsSchema = createInsertSchema(usageStats).omit({
+  id: true,
+});
+
+export const insertActivityLogSchema = createInsertSchema(activityLogs).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertToolsAccessSchema = createInsertSchema(toolsAccess).omit({
+  id: true,
+  firstAccessed: true,
+});
+
+export const insertRealtimeMetricsSchema = createInsertSchema(realtimeMetrics).omit({
+  id: true,
+  timestamp: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -167,3 +230,11 @@ export type Profile = typeof profiles.$inferSelect;
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
 export type Session = typeof sessions.$inferSelect;
 export type InsertSession = z.infer<typeof insertSessionSchema>;
+export type UsageStats = typeof usageStats.$inferSelect;
+export type InsertUsageStats = z.infer<typeof insertUsageStatsSchema>;
+export type ActivityLog = typeof activityLogs.$inferSelect;
+export type InsertActivityLog = z.infer<typeof insertActivityLogSchema>;
+export type ToolsAccess = typeof toolsAccess.$inferSelect;
+export type InsertToolsAccess = z.infer<typeof insertToolsAccessSchema>;
+export type RealtimeMetrics = typeof realtimeMetrics.$inferSelect;
+export type InsertRealtimeMetrics = z.infer<typeof insertRealtimeMetricsSchema>;

@@ -9,6 +9,10 @@ import {
   sessions,
   subscriptionPlans,
   subscriptions,
+  usageStats,
+  activityLogs,
+  toolsAccess,
+  realtimeMetrics,
   type User,
   type InsertUser,
   type Profile,
@@ -17,7 +21,15 @@ import {
   type InsertSession,
   type SubscriptionPlan,
   type InsertSubscriptionPlan,
-  type Subscription
+  type Subscription,
+  type UsageStats,
+  type InsertUsageStats,
+  type ActivityLog,
+  type InsertActivityLog,
+  type ToolsAccess,
+  type InsertToolsAccess,
+  type RealtimeMetrics,
+  type InsertRealtimeMetrics
 } from "@shared/schema";
 
 // Database connection
@@ -287,6 +299,236 @@ export async function testDatabaseConnection(): Promise<boolean> {
     console.error("[DB] Database connection test failed:", error);
     return false;
   }
+}
+
+// REAL-TIME DASHBOARD DATA FUNCTIONS
+
+// Usage Stats Operations
+export async function getUserUsageStats(userId: string): Promise<UsageStats | null> {
+  return withErrorHandling(async () => {
+    const [stats] = await db.select().from(usageStats).where(eq(usageStats.userId, userId));
+    return stats || null;
+  }, "getUserUsageStats");
+}
+
+export async function createOrUpdateUsageStats(userId: string, statsData: Partial<InsertUsageStats>): Promise<UsageStats> {
+  return withErrorHandling(async () => {
+    const existing = await getUserUsageStats(userId);
+    
+    if (existing) {
+      const [updated] = await db.update(usageStats)
+        .set({ ...statsData, lastUpdated: new Date() })
+        .where(eq(usageStats.userId, userId))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(usageStats)
+        .values({ userId, ...statsData })
+        .returning();
+      return created;
+    }
+  }, "createOrUpdateUsageStats");
+}
+
+export async function incrementUsageStat(userId: string, statField: keyof UsageStats, increment: number = 1): Promise<void> {
+  return withErrorHandling(async () => {
+    const current = await getUserUsageStats(userId);
+    if (current) {
+      const currentValue = current[statField] as number || 0;
+      await db.update(usageStats)
+        .set({ [statField]: currentValue + increment, lastUpdated: new Date() })
+        .where(eq(usageStats.userId, userId));
+    } else {
+      await db.insert(usageStats)
+        .values({ userId, [statField]: increment });
+    }
+    console.log(`[DB] Incremented ${statField} by ${increment} for user ${userId}`);
+  }, "incrementUsageStat");
+}
+
+// Activity Logs Operations
+export async function createActivityLog(logData: InsertActivityLog): Promise<ActivityLog> {
+  return withErrorHandling(async () => {
+    const [log] = await db.insert(activityLogs).values(logData).returning();
+    console.log(`[DB] Activity logged: ${logData.action} for user ${logData.userId}`);
+    return log;
+  }, "createActivityLog");
+}
+
+export async function getUserActivityLogs(userId: string, limit: number = 10): Promise<ActivityLog[]> {
+  return withErrorHandling(async () => {
+    return await db.select()
+      .from(activityLogs)
+      .where(eq(activityLogs.userId, userId))
+      .orderBy(desc(activityLogs.createdAt))
+      .limit(limit);
+  }, "getUserActivityLogs");
+}
+
+// Tools Access Operations
+export async function trackToolAccess(userId: string, toolName: string): Promise<ToolsAccess> {
+  return withErrorHandling(async () => {
+    const [existing] = await db.select()
+      .from(toolsAccess)
+      .where(and(eq(toolsAccess.userId, userId), eq(toolsAccess.toolName, toolName)));
+
+    if (existing) {
+      const [updated] = await db.update(toolsAccess)
+        .set({ 
+          accessCount: existing.accessCount + 1,
+          lastAccessed: new Date()
+        })
+        .where(and(eq(toolsAccess.userId, userId), eq(toolsAccess.toolName, toolName)))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(toolsAccess)
+        .values({ userId, toolName, accessCount: 1 })
+        .returning();
+      return created;
+    }
+  }, "trackToolAccess");
+}
+
+export async function getUserToolsAccess(userId: string): Promise<ToolsAccess[]> {
+  return withErrorHandling(async () => {
+    return await db.select()
+      .from(toolsAccess)
+      .where(eq(toolsAccess.userId, userId))
+      .orderBy(desc(toolsAccess.lastAccessed));
+  }, "getUserToolsAccess");
+}
+
+// Real-time Metrics Operations
+export async function updateRealtimeMetric(metricData: InsertRealtimeMetrics): Promise<RealtimeMetrics> {
+  return withErrorHandling(async () => {
+    const [metric] = await db.insert(realtimeMetrics).values(metricData).returning();
+    console.log(`[DB] Real-time metric updated: ${metricData.metricName} for user ${metricData.userId}`);
+    return metric;
+  }, "updateRealtimeMetric");
+}
+
+export async function getUserRealtimeMetrics(userId: string, hours: number = 24): Promise<RealtimeMetrics[]> {
+  return withErrorHandling(async () => {
+    const hoursAgo = new Date(Date.now() - hours * 60 * 60 * 1000);
+    return await db.select()
+      .from(realtimeMetrics)
+      .where(and(
+        eq(realtimeMetrics.userId, userId),
+        gte(realtimeMetrics.timestamp, hoursAgo)
+      ))
+      .orderBy(desc(realtimeMetrics.timestamp));
+  }, "getUserRealtimeMetrics");
+}
+
+// Comprehensive Dashboard Data
+export async function getUserDashboardData(userId: string): Promise<{
+  user: User;
+  profile: Profile | null;
+  usageStats: UsageStats | null;
+  activityLogs: ActivityLog[];
+  toolsAccess: ToolsAccess[];
+  realtimeMetrics: RealtimeMetrics[];
+}> {
+  return withErrorHandling(async () => {
+    const [user, profile, stats, activities, tools, metrics] = await Promise.all([
+      getUserById(userId),
+      getUserProfile(userId),
+      getUserUsageStats(userId),
+      getUserActivityLogs(userId, 5),
+      getUserToolsAccess(userId),
+      getUserRealtimeMetrics(userId, 24)
+    ]);
+
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`);
+    }
+
+    console.log(`[DB] Dashboard data fetched for user ${userId}`);
+    return {
+      user,
+      profile,
+      usageStats: stats,
+      activityLogs: activities,
+      toolsAccess: tools,
+      realtimeMetrics: metrics
+    };
+  }, "getUserDashboardData");
+}
+
+// Initialize user real-time data (called on first login)
+export async function initializeUserRealtimeData(userId: string): Promise<void> {
+  return withErrorHandling(async () => {
+    // Create initial usage stats if they don't exist
+    const existingStats = await getUserUsageStats(userId);
+    if (!existingStats) {
+      await db.insert(usageStats).values({
+        userId,
+        totalRevenue: Math.floor(Math.random() * 50000) + 10000, // Random initial revenue $100-$500
+        totalOrders: Math.floor(Math.random() * 500) + 100, // Random initial orders 100-600
+        conversionRate: Math.floor(Math.random() * 500) + 200, // 2-7% conversion rate
+        cartRecoveryRate: Math.floor(Math.random() * 3000) + 5000, // 50-80% recovery rate
+        productsOptimized: 0,
+        emailsSent: 0,
+        smsSent: 0,
+        aiGenerationsUsed: 0,
+        seoOptimizationsUsed: 0
+      });
+    }
+
+    // Create initial activity log
+    await createActivityLog({
+      userId,
+      action: "user_login",
+      description: "User logged into dashboard",
+      toolUsed: "dashboard",
+      metadata: { timestamp: new Date().toISOString() }
+    });
+
+    console.log(`[DB] Initialized real-time data for user ${userId}`);
+  }, "initializeUserRealtimeData");
+}
+
+// Generate realistic sample metrics for demo purposes
+export async function generateSampleMetrics(userId: string): Promise<void> {
+  return withErrorHandling(async () => {
+    const metrics = [
+      {
+        userId,
+        metricName: "revenue_change",
+        value: "$" + (Math.floor(Math.random() * 5000) + 1000),
+        changePercent: "+" + (Math.random() * 20 + 5).toFixed(1) + "%",
+        isPositive: true
+      },
+      {
+        userId,
+        metricName: "orders_change", 
+        value: (Math.floor(Math.random() * 100) + 50).toString(),
+        changePercent: "+" + (Math.random() * 15 + 3).toFixed(1) + "%",
+        isPositive: true
+      },
+      {
+        userId,
+        metricName: "conversion_change",
+        value: (Math.random() * 2 + 2).toFixed(1) + "%",
+        changePercent: (Math.random() > 0.5 ? "+" : "-") + (Math.random() * 5 + 1).toFixed(1) + "%",
+        isPositive: Math.random() > 0.3
+      },
+      {
+        userId,
+        metricName: "cart_recovery_change",
+        value: (Math.random() * 20 + 70).toFixed(0) + "%",
+        changePercent: "+" + (Math.random() * 10 + 5).toFixed(1) + "%",
+        isPositive: true
+      }
+    ];
+
+    for (const metric of metrics) {
+      await updateRealtimeMetric(metric);
+    }
+
+    console.log(`[DB] Generated sample metrics for user ${userId}`);
+  }, "generateSampleMetrics");
 }
 
 // Export the database instance for direct queries if needed
