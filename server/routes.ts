@@ -6,6 +6,19 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { insertUserSchema } from "@shared/schema";
 import { storage } from "./storage";
+import { 
+  createUser, 
+  getUserByEmail, 
+  getUserProfile,
+  updateUserProfile,
+  getSubscriptionPlans,
+  updateUserSubscription,
+  saveSession,
+  getSession,
+  deleteSession,
+  testDatabaseConnection,
+  seedSubscriptionPlans
+} from "./db";
 import OpenAI from "openai";
 import Stripe from "stripe";
 
@@ -333,6 +346,184 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     });
   }
+
+  // NEW DATABASE HELPER ROUTES
+
+  // User profile routes
+  app.get("/api/profile", requireAuth, async (req, res) => {
+    try {
+      const profile = await getUserProfile(req.user!.id);
+      if (!profile) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      res.json(profile);
+    } catch (error: any) {
+      console.error("Get profile error:", error);
+      res.status(500).json({ message: "Failed to fetch profile" });
+    }
+  });
+
+  app.put("/api/profile", requireAuth, async (req, res) => {
+    try {
+      const { name, bio, profileImage, preferences } = req.body;
+      const profile = await updateUserProfile(req.user!.id, {
+        name,
+        bio,
+        profileImage,
+        preferences
+      });
+      res.json(profile);
+    } catch (error: any) {
+      console.error("Update profile error:", error);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
+  // Subscription plans routes
+  app.get("/api/subscription-plans", async (req, res) => {
+    try {
+      const plans = await getSubscriptionPlans();
+      res.json(plans);
+    } catch (error: any) {
+      console.error("Get subscription plans error:", error);
+      res.status(500).json({ message: "Failed to fetch subscription plans" });
+    }
+  });
+
+  app.post("/api/update-subscription", requireAuth, async (req, res) => {
+    try {
+      const { planId } = req.body;
+      if (!planId) {
+        return res.status(400).json({ message: "Plan ID is required" });
+      }
+      
+      const user = await updateUserSubscription(req.user!.id, planId);
+      res.json({ message: "Subscription updated successfully", user });
+    } catch (error: any) {
+      console.error("Update subscription error:", error);
+      res.status(500).json({ message: error.message || "Failed to update subscription" });
+    }
+  });
+
+  // Session management routes (for admin/internal use only)
+  app.post("/api/sessions", requireAuth, async (req, res) => {
+    try {
+      // Only allow admin users to create sessions
+      if (req.user!.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const { sessionId, expiresAt } = req.body;
+      if (!sessionId || !expiresAt) {
+        return res.status(400).json({ message: "Missing required session data" });
+      }
+      
+      // Use authenticated user's ID instead of allowing arbitrary userId
+      const session = await saveSession({
+        sessionId,
+        userId: req.user!.id,
+        expiresAt: new Date(expiresAt)
+      });
+      res.json(session);
+    } catch (error: any) {
+      console.error("Save session error:", error);
+      res.status(500).json({ message: "Failed to save session" });
+    }
+  });
+
+  app.get("/api/sessions/:sessionId", async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      const session = await getSession(sessionId);
+      if (!session) {
+        return res.status(404).json({ message: "Session not found or expired" });
+      }
+      res.json(session);
+    } catch (error: any) {
+      console.error("Get session error:", error);
+      res.status(500).json({ message: "Failed to fetch session" });
+    }
+  });
+
+  app.delete("/api/sessions/:sessionId", async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      await deleteSession(sessionId);
+      res.json({ message: "Session deleted successfully" });
+    } catch (error: any) {
+      console.error("Delete session error:", error);
+      res.status(500).json({ message: "Failed to delete session" });
+    }
+  });
+
+  // Database admin routes (you may want to protect these more strictly)
+  app.get("/api/admin/db-test", requireAuth, async (req, res) => {
+    try {
+      const isConnected = await testDatabaseConnection();
+      res.json({ 
+        connected: isConnected,
+        message: isConnected ? "Database connection successful" : "Database connection failed"
+      });
+    } catch (error: any) {
+      console.error("Database test error:", error);
+      res.status(500).json({ message: "Database test failed" });
+    }
+  });
+
+  app.post("/api/admin/seed-plans", requireAuth, async (req, res) => {
+    try {
+      // Only allow admin users to seed (you may want to add role checking)
+      if (req.user!.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      await seedSubscriptionPlans();
+      res.json({ message: "Subscription plans seeded successfully" });
+    } catch (error: any) {
+      console.error("Seed plans error:", error);
+      res.status(500).json({ message: "Failed to seed subscription plans" });
+    }
+  });
+
+  // Enhanced user registration route using new database helper
+  app.post("/api/register-v2", async (req, res) => {
+    try {
+      const validatedData = insertUserSchema.parse(req.body);
+      
+      // Check if user already exists using new helper
+      const existingUser = await getUserByEmail(validatedData.email);
+      if (existingUser) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+
+      // Create user using new helper (automatically creates profile)
+      const user = await createUser(validatedData);
+      
+      // Log the user in
+      req.login(user, (err) => {
+        if (err) {
+          console.error("Login error:", err);
+          return res.status(500).json({ message: "Login failed" });
+        }
+        res.status(201).json({ 
+          message: "User created successfully", 
+          user: {
+            id: user.id,
+            email: user.email,
+            fullName: user.fullName,
+            plan: user.plan
+          }
+        });
+      });
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      if (error.message?.includes('Database operation failed')) {
+        res.status(500).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "Registration failed" });
+      }
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
