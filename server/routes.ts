@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { insertUserSchema } from "@shared/schema";
+import { insertUserSchema, insertProductSchema } from "@shared/schema";
 import { storage } from "./storage";
 import { 
   testDatabaseConnection,
@@ -284,20 +284,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/products", requireAuth, async (req, res) => {
     try {
-      const productData = { ...req.body, userId: req.user!.id };
+      // Validate the request body using the insertProductSchema
+      const validation = insertProductSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ 
+          message: "Invalid product data", 
+          errors: validation.error.errors 
+        });
+      }
+      
+      const productData = { ...validation.data, userId: req.user!.id };
       const product = await storage.createProduct(productData);
       res.json(product);
     } catch (error: any) {
+      console.error("Create product error:", error);
       res.status(500).json({ message: "Failed to create product" });
+    }
+  });
+
+  app.get("/api/products/:id", requireAuth, async (req, res) => {
+    try {
+      const product = await storage.getProduct(req.params.id);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      // Check if the product belongs to the authenticated user
+      if (product.userId !== req.user!.id) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      res.json(product);
+    } catch (error: any) {
+      console.error("Get product error:", error);
+      res.status(500).json({ message: "Failed to fetch product" });
     }
   });
 
   app.patch("/api/products/:id", requireAuth, async (req, res) => {
     try {
-      const product = await storage.updateProduct(req.params.id, req.body);
+      // Validate partial update data
+      const validation = insertProductSchema.partial().safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ 
+          message: "Invalid product data", 
+          errors: validation.error.errors 
+        });
+      }
+
+      // Check if the product exists and belongs to the user
+      const existingProduct = await storage.getProduct(req.params.id);
+      if (!existingProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      if (existingProduct.userId !== req.user!.id) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+
+      const product = await storage.updateProduct(req.params.id, validation.data);
       res.json(product);
     } catch (error: any) {
+      console.error("Update product error:", error);
       res.status(500).json({ message: "Failed to update product" });
+    }
+  });
+
+  app.delete("/api/products/:id", requireAuth, async (req, res) => {
+    try {
+      // Check if the product exists and belongs to the user
+      const existingProduct = await storage.getProduct(req.params.id);
+      if (!existingProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      if (existingProduct.userId !== req.user!.id) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+
+      await storage.deleteProduct(req.params.id);
+      res.json({ message: "Product deleted successfully" });
+    } catch (error: any) {
+      console.error("Delete product error:", error);
+      res.status(500).json({ message: "Failed to delete product" });
     }
   });
 

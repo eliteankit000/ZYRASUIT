@@ -303,7 +303,10 @@ export class MemStorage implements IStorage {
       ...product,
       description: product.description || null,
       originalDescription: product.originalDescription || null,
-      category: product.category || null,
+      category: product.category, // Required field, no fallback to null
+      price: product.price, // Required field from new schema
+      stock: product.stock || 0, // Default to 0 if not provided
+      image: product.image || null, // Optional field
       features: product.features || null,
       tags: product.tags || null,
       optimizedCopy: product.optimizedCopy || null,

@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, jsonb, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, jsonb, boolean, numeric } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -23,7 +23,10 @@ export const products = pgTable("products", {
   name: text("name").notNull(),
   description: text("description"),
   originalDescription: text("original_description"),
-  category: text("category"),
+  price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+  category: text("category").notNull(),
+  stock: integer("stock").notNull().default(0),
+  image: text("image"),
   features: text("features"),
   tags: text("tags"),
   optimizedCopy: jsonb("optimized_copy"),
@@ -161,6 +164,10 @@ export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  price: z.string().min(1, "Price is required"),
+  stock: z.number().min(0, "Stock must be 0 or greater"),
+  category: z.string().min(1, "Category is required"),
 });
 
 export const insertSeoMetaSchema = createInsertSchema(seoMeta).omit({
