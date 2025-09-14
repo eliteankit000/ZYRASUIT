@@ -180,7 +180,7 @@ export default function Sidebar({ activeTab, onTabChange, user, isOpen, onClose 
               <User className="w-5 h-5 text-primary-foreground" />
             </div>
             <div className="flex-1">
-              <div className="text-sm font-medium" data-testid="text-user-name">{user?.fullName || "User"}</div>
+              <div className="text-sm font-medium pl-[0px] pr-[0px] ml-[-2px] mr-[-2px] pt-[-12px] pb-[-12px] mt-[-4px] mb-[-4px]" data-testid="text-user-name">{user?.fullName || "User"}</div>
               <div className="text-xs text-muted-foreground" data-testid="text-user-plan">{user?.plan || "Free"} Plan</div>
             </div>
             <Button
