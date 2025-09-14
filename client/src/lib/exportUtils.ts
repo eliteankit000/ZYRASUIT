@@ -1,9 +1,13 @@
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
+// Extend jsPDF interface to include autoTable
 declare module 'jspdf' {
   interface jsPDF {
     autoTable: (options: any) => jsPDF;
+    lastAutoTable?: {
+      finalY: number;
+    };
   }
 }
 
@@ -101,131 +105,146 @@ export function generatePDF(data: ExportData): jsPDF {
   
   let yPosition = 50;
   
-  // Key Metrics Table
-  doc.setFontSize(16);
-  doc.setTextColor(40, 44, 52);
-  doc.text('Key Performance Metrics', 20, yPosition);
-  yPosition += 10;
-  
-  const keyMetricsData = data.keyMetrics.map(metric => [
-    metric.title,
-    metric.value,
-    metric.change,
-    metric.positive ? '📈 Positive' : '📉 Negative'
-  ]);
-  
-  doc.autoTable({
-    startY: yPosition,
-    head: [['Metric', 'Value', 'Change', 'Trend']],
-    body: keyMetricsData,
-    theme: 'grid',
-    headStyles: { fillColor: [59, 130, 246] },
-    styles: { fontSize: 10 },
-    margin: { left: 20, right: 20 }
-  });
-  
-  yPosition = (doc as any).lastAutoTable.finalY + 20;
-  
-  // Product Performance Table
-  doc.setFontSize(16);
-  doc.setTextColor(40, 44, 52);
-  doc.text('Product Performance', 20, yPosition);
-  yPosition += 10;
-  
-  const productData = data.products.length > 0 ? data.products.map(product => [
-    product.name,
-    'Active',
-    product.isOptimized ? 'Optimized' : 'Not optimized',
-    product.isOptimized ? '+32%' : '--'
-  ]) : [['No products available', '--', '--', '--']];
-  
-  doc.autoTable({
-    startY: yPosition,
-    head: [['Product Name', 'Status', 'Optimization', 'Performance']],
-    body: productData,
-    theme: 'grid',
-    headStyles: { fillColor: [59, 130, 246] },
-    styles: { fontSize: 10 },
-    margin: { left: 20, right: 20 }
-  });
-  
-  yPosition = (doc as any).lastAutoTable.finalY + 20;
-  
-  // Campaign Performance Section
-  doc.setFontSize(16);
-  doc.setTextColor(40, 44, 52);
-  doc.text('Campaign Performance', 20, yPosition);
-  yPosition += 10;
-  
-  // Email Performance
-  doc.setFontSize(14);
-  doc.text('Email Campaigns', 20, yPosition);
-  yPosition += 5;
-  
-  const emailData = [
-    ['Delivered', data.emailPerformance.delivered],
-    ['Opened', data.emailPerformance.opened],
-    ['Clicked', data.emailPerformance.clicked],
-    ['Converted', data.emailPerformance.converted]
-  ];
-  
-  doc.autoTable({
-    startY: yPosition,
-    head: [['Metric', 'Value']],
-    body: emailData,
-    theme: 'grid',
-    headStyles: { fillColor: [34, 197, 94] },
-    styles: { fontSize: 10 },
-    margin: { left: 20, right: 100 }
-  });
-  
-  yPosition = (doc as any).lastAutoTable.finalY + 15;
-  
-  // SMS Performance
-  doc.setFontSize(14);
-  doc.text('SMS Campaigns', 20, yPosition);
-  yPosition += 5;
-  
-  const smsData = [
-    ['Sent', data.smsPerformance.sent],
-    ['Delivered', data.smsPerformance.delivered],
-    ['Clicked', data.smsPerformance.clicked],
-    ['Recovered', data.smsPerformance.recovered]
-  ];
-  
-  doc.autoTable({
-    startY: yPosition,
-    head: [['Metric', 'Value']],
-    body: smsData,
-    theme: 'grid',
-    headStyles: { fillColor: [168, 85, 247] },
-    styles: { fontSize: 10 },
-    margin: { left: 20, right: 100 }
-  });
-  
-  yPosition = (doc as any).lastAutoTable.finalY + 15;
-  
-  // SEO Performance
-  doc.setFontSize(14);
-  doc.text('SEO Performance', 20, yPosition);
-  yPosition += 5;
-  
-  const seoData = [
-    ['Optimized Products', data.seoPerformance.optimizedProducts.toString()],
-    ['Avg. Ranking Improvement', data.seoPerformance.rankingImprovement],
-    ['Organic Traffic', data.seoPerformance.organicTraffic],
-    ['Keyword Rankings', data.seoPerformance.keywordRankings]
-  ];
-  
-  doc.autoTable({
-    startY: yPosition,
-    head: [['Metric', 'Value']],
-    body: seoData,
-    theme: 'grid',
-    headStyles: { fillColor: [249, 115, 22] },
-    styles: { fontSize: 10 },
-    margin: { left: 20, right: 100 }
-  });
+  try {
+    // Key Metrics Table
+    doc.setFontSize(16);
+    doc.setTextColor(40, 44, 52);
+    doc.text('Key Performance Metrics', 20, yPosition);
+    yPosition += 10;
+    
+    const keyMetricsData = data.keyMetrics.map(metric => [
+      metric.title,
+      metric.value,
+      metric.change,
+      metric.positive ? 'Positive' : 'Negative'
+    ]);
+    
+    doc.autoTable({
+      startY: yPosition,
+      head: [['Metric', 'Value', 'Change', 'Trend']],
+      body: keyMetricsData,
+      theme: 'grid',
+      headStyles: { fillColor: [59, 130, 246] },
+      styles: { fontSize: 10 },
+      margin: { left: 20, right: 20 }
+    });
+    
+    yPosition = doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 20 : yPosition + 80;
+    
+    // Product Performance Table
+    doc.setFontSize(16);
+    doc.setTextColor(40, 44, 52);
+    doc.text('Product Performance', 20, yPosition);
+    yPosition += 10;
+    
+    const productData = data.products.length > 0 ? data.products.map(product => [
+      product.name,
+      'Active',
+      product.isOptimized ? 'Optimized' : 'Not optimized',
+      product.isOptimized ? '+32%' : '--'
+    ]) : [['No products available', '--', '--', '--']];
+    
+    doc.autoTable({
+      startY: yPosition,
+      head: [['Product Name', 'Status', 'Optimization', 'Performance']],
+      body: productData,
+      theme: 'grid',
+      headStyles: { fillColor: [59, 130, 246] },
+      styles: { fontSize: 10 },
+      margin: { left: 20, right: 20 }
+    });
+    
+    yPosition = doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 20 : yPosition + 80;
+    
+    // Check if we need a new page
+    if (yPosition > 240) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    // Campaign Performance Section
+    doc.setFontSize(16);
+    doc.setTextColor(40, 44, 52);
+    doc.text('Campaign Performance', 20, yPosition);
+    yPosition += 10;
+    
+    // Email Performance
+    doc.setFontSize(14);
+    doc.text('Email Campaigns', 20, yPosition);
+    yPosition += 5;
+    
+    const emailData = [
+      ['Delivered', data.emailPerformance.delivered],
+      ['Opened', data.emailPerformance.opened],
+      ['Clicked', data.emailPerformance.clicked],
+      ['Converted', data.emailPerformance.converted]
+    ];
+    
+    doc.autoTable({
+      startY: yPosition,
+      head: [['Metric', 'Value']],
+      body: emailData,
+      theme: 'grid',
+      headStyles: { fillColor: [34, 197, 94] },
+      styles: { fontSize: 10 },
+      margin: { left: 20, right: 100 }
+    });
+    
+    yPosition = doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 15 : yPosition + 60;
+    
+    // SMS Performance
+    doc.setFontSize(14);
+    doc.text('SMS Campaigns', 20, yPosition);
+    yPosition += 5;
+    
+    const smsData = [
+      ['Sent', data.smsPerformance.sent],
+      ['Delivered', data.smsPerformance.delivered],
+      ['Clicked', data.smsPerformance.clicked],
+      ['Recovered', data.smsPerformance.recovered]
+    ];
+    
+    doc.autoTable({
+      startY: yPosition,
+      head: [['Metric', 'Value']],
+      body: smsData,
+      theme: 'grid',
+      headStyles: { fillColor: [168, 85, 247] },
+      styles: { fontSize: 10 },
+      margin: { left: 20, right: 100 }
+    });
+    
+    yPosition = doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 15 : yPosition + 60;
+    
+    // SEO Performance
+    doc.setFontSize(14);
+    doc.text('SEO Performance', 20, yPosition);
+    yPosition += 5;
+    
+    const seoData = [
+      ['Optimized Products', data.seoPerformance.optimizedProducts.toString()],
+      ['Avg. Ranking Improvement', data.seoPerformance.rankingImprovement],
+      ['Organic Traffic', data.seoPerformance.organicTraffic],
+      ['Keyword Rankings', data.seoPerformance.keywordRankings]
+    ];
+    
+    doc.autoTable({
+      startY: yPosition,
+      head: [['Metric', 'Value']],
+      body: seoData,
+      theme: 'grid',
+      headStyles: { fillColor: [249, 115, 22] },
+      styles: { fontSize: 10 },
+      margin: { left: 20, right: 100 }
+    });
+    
+  } catch (error) {
+    console.error('PDF generation error:', error);
+    // Add error message to PDF
+    doc.setFontSize(12);
+    doc.setTextColor(255, 0, 0);
+    doc.text('Error generating detailed report. Basic information included.', 20, yPosition);
+  }
   
   // Footer
   const pageCount = doc.getNumberOfPages();
