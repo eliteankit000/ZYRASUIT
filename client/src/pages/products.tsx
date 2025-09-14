@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Edit2, Trash2, Package, DollarSign, Archive, Image as ImageIcon } from "lucide-react";
+import { Plus, Edit2, Trash2, Package, DollarSign, Archive, Image as ImageIcon, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -16,6 +16,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { insertProductSchema } from "@shared/schema";
 import type { Product, InsertProduct } from "@shared/schema";
 import { z } from "zod";
+import Sidebar from "@/components/dashboard/sidebar";
+import { useAuth } from "@/lib/auth";
 
 // Product categories - you can expand this list
 const PRODUCT_CATEGORIES = [
@@ -185,7 +187,9 @@ function ProductGrid({ products, isLoading, onEdit, onDelete }: {
 export default function ProductsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const { toast } = useToast();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   // Form setup
@@ -326,26 +330,61 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Products</h1>
-          <p className="text-muted-foreground">
-            Manage your product catalog
-          </p>
-        </div>
-        
-        <Dialog open={isAddDialogOpen || !!editingProduct} onOpenChange={(open) => {
-          if (!open) resetForm();
-          else setIsAddDialogOpen(true);
-        }}>
-          <DialogTrigger asChild>
-            <Button data-testid="button-add-product-main">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Product
-            </Button>
-          </DialogTrigger>
+    <div className="min-h-screen flex">
+      <Sidebar 
+        activeTab="products" 
+        onTabChange={() => {}} 
+        user={user} 
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+
+      {/* Main Content */}
+      <div className={`flex-1 transition-all duration-300 ease-in-out ${
+        sidebarOpen ? 'lg:ml-64' : 'ml-0'
+      }`}>
+        {/* Top Bar */}
+        <header className="bg-card/50 backdrop-blur-sm border-b border-border px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="hover:bg-muted flex-shrink-0"
+                data-testid="button-toggle-sidebar"
+              >
+                <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
+              </Button>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold truncate">Products</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">Manage your product catalog</p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Products Content */}
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          {/* Products Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">Product Catalog</h2>
+              <p className="text-muted-foreground">
+                Add and manage your product inventory
+              </p>
+            </div>
+            
+            <Dialog open={isAddDialogOpen || !!editingProduct} onOpenChange={(open) => {
+              if (!open) resetForm();
+              else setIsAddDialogOpen(true);
+            }}>
+              <DialogTrigger asChild>
+                <Button data-testid="button-add-product-main">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Product
+                </Button>
+              </DialogTrigger>
           
           <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
             <DialogHeader>
@@ -520,16 +559,18 @@ export default function ProductsPage() {
               </form>
             </Form>
           </DialogContent>
-        </Dialog>
-      </div>
+            </Dialog>
+          </div>
 
-      {/* Products Grid */}
-      <ProductGrid 
-        products={products}
-        isLoading={isLoading}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+          {/* Products Grid */}
+          <ProductGrid 
+            products={products}
+            isLoading={isLoading}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </div>
+      </div>
     </div>
   );
 }
