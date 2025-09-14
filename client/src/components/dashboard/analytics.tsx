@@ -2,7 +2,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 import { 
   Eye, 
   MousePointer, 
@@ -10,10 +13,17 @@ import {
   Mail,
   Download,
   TrendingUp,
-  BarChart3
+  BarChart3,
+  ChevronDown,
+  FileText,
+  FileSpreadsheet
 } from "lucide-react";
+import { generateCSV, generatePDF, downloadFile, getExportFilename, type ExportData } from "@/lib/exportUtils";
 
 export default function Analytics() {
+  const { toast } = useToast();
+  const [isExporting, setIsExporting] = useState(false);
+  
   // Fetch analytics data from the API
   const { data: analytics, isLoading, error } = useQuery({
     queryKey: ["/api/analytics"],
@@ -78,6 +88,75 @@ export default function Analytics() {
 
   const topProducts = (products as any)?.slice(0, 3) || [];
 
+  // Prepare export data
+  const prepareExportData = (): ExportData => {
+    return {
+      keyMetrics: keyMetrics.map(metric => ({
+        title: metric.title,
+        value: metric.value,
+        change: metric.change,
+        positive: metric.positive
+      })),
+      products: (products as any) || [],
+      emailPerformance: {
+        delivered: "12,450",
+        opened: "8,523 (68.5%)",
+        clicked: "1,247 (14.6%)",
+        converted: "324 (26%)"
+      },
+      smsPerformance: {
+        sent: "3,240",
+        delivered: "3,186 (98.3%)",
+        clicked: "892 (28%)",
+        recovered: "267 (30%)"
+      },
+      seoPerformance: {
+        optimizedProducts: (products as any)?.filter((p: any) => p.isOptimized).length || 0,
+        rankingImprovement: "+8 positions",
+        organicTraffic: "+42%",
+        keywordRankings: "234 in top 10"
+      }
+    };
+  };
+
+  // Handle export functionality
+  const handleExport = async (format: 'csv' | 'pdf') => {
+    if (isExporting) return;
+    
+    setIsExporting(true);
+    
+    try {
+      const exportData = prepareExportData();
+      const filename = getExportFilename(format);
+      
+      if (format === 'csv') {
+        const csvContent = generateCSV(exportData);
+        downloadFile(csvContent, filename, 'csv');
+        toast({
+          title: "✅ CSV Export Successful",
+          description: `Your analytics report has been downloaded as ${filename}`,
+        });
+      } else if (format === 'pdf') {
+        const pdfDoc = generatePDF(exportData);
+        downloadFile(pdfDoc, filename, 'pdf');
+        toast({
+          title: "✅ PDF Export Successful", 
+          description: `Your analytics report has been downloaded as ${filename}`,
+        });
+      }
+    } catch (error) {
+      console.error('Export error:', error);
+      toast({
+        title: "❌ Export Failed",
+        description: "There was an error generating your report. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      // Add slight delay to show loading state
+      setTimeout(() => setIsExporting(false), 500);
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -97,10 +176,41 @@ export default function Analytics() {
               <SelectItem value="90days">Last 90 days</SelectItem>
             </SelectContent>
           </Select>
-          <Button className="gradient-button" data-testid="button-export-report">
-            <Download className="w-4 h-4 mr-2" />
-            Export Report
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                className="gradient-button transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-lg" 
+                disabled={isExporting}
+                data-testid="button-export-report"
+              >
+                <Download className={`w-4 h-4 mr-2 ${isExporting ? 'animate-pulse' : ''}`} />
+                {isExporting ? 'Generating...' : 'Export Report'}
+                <ChevronDown className="w-4 h-4 ml-2" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem 
+                onClick={() => handleExport('csv')}
+                disabled={isExporting}
+                className="cursor-pointer hover:bg-accent transition-colors"
+                data-testid="menu-export-csv"
+              >
+                <FileSpreadsheet className="w-4 h-4 mr-2 text-green-600" />
+                Export as CSV
+                <span className="ml-auto text-xs text-muted-foreground">Excel/Sheets</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => handleExport('pdf')}
+                disabled={isExporting}
+                className="cursor-pointer hover:bg-accent transition-colors"
+                data-testid="menu-export-pdf"
+              >
+                <FileText className="w-4 h-4 mr-2 text-red-600" />
+                Export as PDF
+                <span className="ml-auto text-xs text-muted-foreground">Document</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
