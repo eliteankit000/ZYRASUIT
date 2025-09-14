@@ -122,7 +122,6 @@ export default function Sidebar({ activeTab, onTabChange, user, isOpen, onClose 
           aria-hidden="true"
         />
       )}
-      
       {/* Sidebar */}
       <div
         ref={sidebarRef}
@@ -154,7 +153,7 @@ export default function Sidebar({ activeTab, onTabChange, user, isOpen, onClose 
           </div>
 
           {/* Navigation */}
-          <nav className="space-y-2">
+          <nav className="space-y-2 mt-[-27px] mb-[-27px]">
             {navItems.map((item) => (
               <Button
                 key={item.id}
