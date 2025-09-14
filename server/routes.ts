@@ -366,6 +366,135 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Optimize all products endpoint
+  app.post("/api/products/optimize-all", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      
+      // Fetch all products for the user
+      const products = await storage.getProducts(userId);
+      
+      if (products.length === 0) {
+        return res.json({ 
+          message: "No products found to optimize", 
+          optimizedCount: 0 
+        });
+      }
+
+      // Helper function to capitalize names properly
+      const capitalizeName = (name: string): string => {
+        return name.split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+          .join(' ');
+      };
+
+      // Helper function to generate default descriptions
+      const generateDefaultDescription = (name: string, category: string): string => {
+        const categoryDescriptions: Record<string, string> = {
+          'Electronics': `Experience the latest in electronic innovation with ${name}. Designed for modern living with premium quality and reliable performance.`,
+          'Clothing': `Discover stylish comfort with ${name}. Premium quality materials and contemporary design for your wardrobe essentials.`,
+          'Home & Garden': `Transform your living space with ${name}. Quality craftsmanship meets functional design for your home.`,
+          'Books': `Immerse yourself in ${name}. A captivating read that combines engaging content with valuable insights.`,
+          'Health': `Enhance your wellness journey with ${name}. Quality ingredients and trusted formulation for your health goals.`,
+          'Sports': `Elevate your performance with ${name}. Professional-grade quality for athletes and fitness enthusiasts.`,
+          'Beauty': `Discover your natural radiance with ${name}. Premium formulation for effective and gentle care.`,
+          'Toys': `Spark imagination and fun with ${name}. Safe, durable, and designed for endless entertainment.`
+        };
+        
+        return categoryDescriptions[category] || `Discover the exceptional quality and value of ${name}. Carefully crafted to meet your needs with superior performance and reliability.`;
+      };
+
+      // Helper function to generate default tags
+      const generateDefaultTags = (category: string): string => {
+        const categoryTags: Record<string, string> = {
+          'Electronics': 'technology, innovation, gadgets, electronics, modern',
+          'Clothing': 'fashion, style, apparel, comfortable, trendy',
+          'Home & Garden': 'home improvement, decor, garden, lifestyle, quality',
+          'Books': 'reading, education, literature, knowledge, entertainment',
+          'Health': 'wellness, health, fitness, natural, supplements',
+          'Sports': 'fitness, sports, athletic, performance, training',
+          'Beauty': 'skincare, beauty, cosmetics, self-care, premium',
+          'Toys': 'kids, fun, educational, safe, entertainment'
+        };
+        
+        return categoryTags[category] || 'quality, premium, reliable, popular, recommended';
+      };
+
+      // Remove duplicates by name and category
+      const uniqueProducts = [];
+      const seen = new Set();
+      
+      for (const product of products) {
+        const key = `${product.name.toLowerCase()}-${product.category.toLowerCase()}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          uniqueProducts.push(product);
+        }
+      }
+
+      // Optimize each unique product
+      const optimizedProducts = uniqueProducts.map(product => {
+        const optimizedName = capitalizeName(product.name);
+        const optimizedDescription = product.description || generateDefaultDescription(product.name, product.category);
+        const optimizedTags = product.tags || generateDefaultTags(product.category);
+        
+        return {
+          id: product.id,
+          name: optimizedName,
+          description: optimizedDescription,
+          tags: optimizedTags,
+          isOptimized: true,
+          optimizedCopy: {
+            originalName: product.name,
+            originalDescription: product.description,
+            originalTags: product.tags,
+            optimizedAt: new Date().toISOString(),
+            optimizationType: 'database-only'
+          }
+        };
+      });
+
+      // Update all optimized products in database
+      const updatePromises = optimizedProducts.map(product => 
+        storage.updateProduct(product.id, {
+          name: product.name,
+          description: product.description,
+          tags: product.tags,
+          isOptimized: product.isOptimized,
+          optimizedCopy: product.optimizedCopy
+        })
+      );
+
+      await Promise.all(updatePromises);
+
+      // Delete duplicate products (keep only the unique ones)
+      const duplicateCount = products.length - uniqueProducts.length;
+      if (duplicateCount > 0) {
+        const uniqueIds = new Set(uniqueProducts.map(p => p.id));
+        const duplicateIds = products
+          .filter(p => !uniqueIds.has(p.id))
+          .map(p => p.id);
+        
+        const deletePromises = duplicateIds.map(id => storage.deleteProduct(id));
+        await Promise.all(deletePromises);
+      }
+
+      res.json({
+        message: "All products optimized successfully",
+        optimizedCount: optimizedProducts.length,
+        duplicatesRemoved: duplicateCount,
+        details: {
+          namesCapitalized: optimizedProducts.filter(p => p.optimizedCopy.originalName !== p.name).length,
+          descriptionsGenerated: optimizedProducts.filter(p => !p.optimizedCopy.originalDescription).length,
+          tagsAdded: optimizedProducts.filter(p => !p.optimizedCopy.originalTags).length
+        }
+      });
+    } catch (error: any) {
+      console.error("Optimize products error:", error);
+      res.status(500).json({ message: "Failed to optimize products" });
+    }
+  });
+
   // Analytics
   app.get("/api/analytics", requireAuth, async (req, res) => {
     try {

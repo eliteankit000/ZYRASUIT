@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,9 @@ import Profile from "@/components/dashboard/profile";
 import { useAuth } from "@/lib/auth";
 import { useDashboard, useSkeletonLoader, useConnectionStatus } from "@/hooks/useDashboard";
 import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { Zap, TrendingUp, ShoppingCart, Eye, RotateCcw, Plus, Bell, Menu, Wifi, WifiOff } from "lucide-react";
 
 export default function Dashboard() {
@@ -18,6 +21,8 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Real-time dashboard data
   const {
@@ -38,6 +43,70 @@ export default function Dashboard() {
 
   // Connection status monitoring
   const { isOnline } = useConnectionStatus();
+
+  // Optimize All Products mutation with debouncing
+  const optimizeAllMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/products/optimize-all");
+      return response.json();
+    },
+    onSuccess: (data: any) => {
+      // Show success toast with details
+      const { optimizedCount, duplicatesRemoved, details } = data;
+      let message = `✅ All products optimized successfully! `;
+      if (optimizedCount > 0) {
+        message += `${optimizedCount} products processed`;
+        if (duplicatesRemoved > 0) {
+          message += `, ${duplicatesRemoved} duplicates removed`;
+        }
+        message += `.`;
+      }
+      
+      toast({
+        title: "Optimization Complete!",
+        description: message,
+        duration: 5000,
+      });
+
+      // Invalidate queries to refresh UI
+      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] });
+      
+      // Update usage stats optimistically
+      updateUsageStats("productsOptimized", optimizedCount);
+      logActivity("optimize_all_completed", `Optimized ${optimizedCount} products successfully`, "dashboard");
+    },
+    onError: (error: any) => {
+      // Show error toast
+      toast({
+        title: "Optimization Failed",
+        description: error.message || "Failed to optimize products. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      });
+      logActivity("optimize_all_failed", "Product optimization failed", "dashboard");
+    }
+  });
+
+  // Debounced optimize function to prevent multiple clicks
+  const [lastOptimizeTime, setLastOptimizeTime] = useState(0);
+  const handleOptimizeAll = useCallback(() => {
+    const now = Date.now();
+    const minDelay = 2000; // 2 second debounce
+    
+    if (now - lastOptimizeTime < minDelay) {
+      toast({
+        title: "Please Wait",
+        description: "Optimization is in progress. Please wait a moment.",
+        duration: 3000,
+      });
+      return;
+    }
+    
+    setLastOptimizeTime(now);
+    logActivity("optimize_all_clicked", "User clicked Optimize All button", "dashboard");
+    optimizeAllMutation.mutate();
+  }, [lastOptimizeTime, logActivity, optimizeAllMutation, toast]);
 
   // Handle responsive behavior - close sidebar on mobile by default
   useEffect(() => {
@@ -377,9 +446,9 @@ export default function Dashboard() {
               {/* Connection Status Indicator */}
               <div className="flex items-center mr-2">
                 {isOnline ? (
-                  <Wifi className="w-4 h-4 text-green-500" title="Connected" />
+                  <Wifi className="w-4 h-4 text-green-500" />
                 ) : (
-                  <WifiOff className="w-4 h-4 text-destructive" title="Offline" />
+                  <WifiOff className="w-4 h-4 text-destructive" />
                 )}
                 {isInitialized && (
                   <span className="ml-1 text-xs text-muted-foreground hidden lg:inline">
@@ -389,17 +458,21 @@ export default function Dashboard() {
               </div>
 
               <Button 
-                className="gradient-button hidden sm:flex text-sm lg:text-base px-3 sm:px-4" 
+                id="optimizeAllBtn"
+                className="gradient-button hidden sm:flex text-sm lg:text-base px-3 sm:px-4 transition-all duration-200 hover:scale-105 active:scale-95" 
                 data-testid="button-optimize-all"
-                onClick={() => {
-                  logActivity("optimize_all_clicked", "User clicked Optimize All button", "dashboard");
-                  updateUsageStats("productsOptimized", 1);
-                }}
-                disabled={isTrackingTool}
+                onClick={handleOptimizeAll}
+                disabled={isTrackingTool || optimizeAllMutation.isPending}
               >
-                <Zap className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                <span className="hidden md:inline">Optimize All</span>
-                <span className="md:hidden">Optimize</span>
+                <Zap className={`w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 ${
+                  optimizeAllMutation.isPending ? 'animate-spin' : ''
+                }`} />
+                <span className="hidden md:inline">
+                  {optimizeAllMutation.isPending ? '⚡ Optimizing…' : '⚡ Optimize All'}
+                </span>
+                <span className="md:hidden">
+                  {optimizeAllMutation.isPending ? '⚡ ...' : '⚡ Optimize'}
+                </span>
               </Button>
               
               <Button 
