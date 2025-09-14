@@ -32,6 +32,7 @@ export function useDashboard() {
   const { toast } = useToast();
   const [isInitialized, setIsInitialized] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<number>(Date.now());
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout>();
 
   // Fetch comprehensive dashboard data
@@ -186,11 +187,47 @@ export function useDashboard() {
     }
   }, [isInitialized, initializeMutation]);
 
-  // Manual refresh function
+  // Comprehensive refresh functionality with loading states and error handling
+  const refreshMutation = useMutation({
+    mutationFn: async () => {
+      // Force fresh data fetch by invalidating all cache
+      await queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
+      await queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      await queryClient.invalidateQueries({ queryKey: ["/api/analytics"] });
+      
+      // Fetch fresh data
+      const response = await refetch();
+      return response.data;
+    },
+    onMutate: () => {
+      setIsRefreshing(true);
+    },
+    onSuccess: (data) => {
+      setLastUpdate(Date.now());
+      toast({
+        title: "✅ Data refreshed successfully!",
+        description: "All dashboard data has been updated with the latest information.",
+        duration: 3000,
+      });
+    },
+    onError: (error: any) => {
+      console.error("Refresh failed:", error);
+      toast({
+        title: "❌ Refresh failed, try again.",
+        description: "Unable to fetch fresh data. Please check your connection and try again.",
+        variant: "destructive",
+        duration: 4000,
+      });
+    },
+    onSettled: () => {
+      setIsRefreshing(false);
+    }
+  });
+
+  // Manual refresh function with comprehensive functionality
   const refreshDashboard = useCallback(() => {
-    refetch();
-    setLastUpdate(Date.now());
-  }, [refetch]);
+    refreshMutation.mutate();
+  }, [refreshMutation]);
 
   // Track tool access with optimistic UI
   const trackToolAccess = useCallback(
@@ -272,6 +309,7 @@ export function useDashboard() {
     isLoggingActivity: logActivityMutation.isPending,
     isUpdatingUsage: updateUsageMutation.isPending,
     isRefreshingMetrics: refreshMetricsMutation.isPending,
+    isRefreshing,
   };
 }
 

@@ -162,6 +162,7 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
+  userId: true,
   createdAt: true,
   updatedAt: true,
 }).extend({
