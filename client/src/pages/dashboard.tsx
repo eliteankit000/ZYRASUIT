@@ -10,6 +10,7 @@ import Campaigns from "@/components/dashboard/campaigns";
 import GrowthDashboard from "@/components/dashboard/growth-dashboard";
 import Settings from "@/components/dashboard/settings";
 import Profile from "@/components/dashboard/profile";
+import NotificationCenter from "@/components/dashboard/notification-center";
 import { useAuth } from "@/lib/auth";
 import { useDashboard, useSkeletonLoader, useConnectionStatus } from "@/hooks/useDashboard";
 import { useLocation } from "wouter";
@@ -250,6 +251,11 @@ export default function Dashboard() {
                 <h1 className="text-lg sm:text-xl lg:text-2xl font-bold truncate" data-testid="text-page-title">{pageTitle.title}</h1>
                 <p className="text-xs sm:text-sm text-muted-foreground truncate" data-testid="text-page-subtitle">{pageTitle.subtitle}</p>
               </div>
+            </div>
+            
+            {/* Right Side - Notification Center */}
+            <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
+              <NotificationCenter />
             </div>
           </div>
         </header>
