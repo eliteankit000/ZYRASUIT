@@ -353,7 +353,7 @@ export default function Dashboard() {
 
               {/* Notification Dropdown */}
               {notificationsOpen && (
-                <div className="absolute right-0 mt-2 w-80 md:w-96 bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-2xl border border-slate-700/50 z-50 transition-all duration-300 hover:shadow-cyan-500/30">
+                <div className="absolute right-0 mt-2 w-80 md:w-96 bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-2xl border border-slate-700/50 z-[9999] transition-all duration-300 hover:shadow-cyan-500/30">
                   <div className="p-4 border-b border-slate-700/50">
                     <div className="flex items-center justify-between">
                       <h3 className="text-white font-bold text-lg">Notifications</h3>
