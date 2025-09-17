@@ -247,46 +247,7 @@ export default function Dashboard() {
                 <p className="text-xs sm:text-sm text-muted-foreground truncate" data-testid="text-page-subtitle">{pageTitle.subtitle}</p>
               </div>
             </div>
-            <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 flex-shrink-0">
-              {/* Connection Status Indicator */}
-              <div className="flex items-center mr-2">
-                {isOnline ? (
-                  <Wifi className="w-4 h-4 text-green-500" />
-                ) : (
-                  <WifiOff className="w-4 h-4 text-destructive" />
-                )}
-                {isInitialized && (
-                  <span className="ml-1 text-xs text-muted-foreground hidden lg:inline">
-                    Last sync: {new Date(lastUpdate).toLocaleTimeString()}
-                  </span>
-                )}
-              </div>
-
-              <Button 
-                variant="outline" 
-                className="hidden md:flex text-sm lg:text-base px-3 sm:px-4" 
-                data-testid="button-add-product"
-                onClick={() => {
-                  logActivity("add_product_clicked", "User clicked Add Product button", "dashboard");
-                  setLocation("/products");
-                }}
-              >
-                <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                Add Product
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="relative" 
-                data-testid="button-notifications"
-                onClick={() => logActivity("notifications_opened", "User opened notifications", "dashboard")}
-              >
-                <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-destructive rounded-full"></span>
-              </Button>
-              
-            </div>
+            
           </div>
         </header>
 
