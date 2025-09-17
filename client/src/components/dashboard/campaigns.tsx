@@ -37,7 +37,7 @@ export default function Campaigns() {
       id: 'upsell-receipts',
       title: 'Upsell Email Receipts',
       description: 'Auto-generate branded email receipts that include personalized upsell offers and recommendations',
-      icon: <Mail className="w-8 h-8" style={{ color: '#00D4FF' }} />,
+      icon: <Mail className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
       category: 'existing',
       actionText: 'Configure Receipts',
       comingSoon: false,
@@ -47,7 +47,7 @@ export default function Campaigns() {
       id: 'abandoned-cart-sms',
       title: 'Abandoned Cart SMS',
       description: 'AI-crafted SMS messages to recover abandoned carts with personalized incentives',
-      icon: <MessageSquare className="w-8 h-8" style={{ color: '#FF0080' }} />,
+      icon: <MessageSquare className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
       category: 'existing',
       actionText: 'Setup SMS Recovery',
       comingSoon: false,
@@ -57,7 +57,7 @@ export default function Campaigns() {
       id: 'custom-templates',
       title: 'Custom Templates',
       description: 'Create and edit email & SMS workflow templates with drag-and-drop builder',
-      icon: <FileText className="w-8 h-8" style={{ color: '#00FF88' }} />,
+      icon: <FileText className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
       category: 'existing',
       actionText: 'Edit Templates',
       comingSoon: false,
@@ -67,7 +67,7 @@ export default function Campaigns() {
       id: 'behavioral-triggers',
       title: 'Behavioral Triggers',
       description: 'AI decides optimal timing & channel - email for active users, SMS for inactive ones',
-      icon: <Brain className="w-8 h-8" style={{ color: '#8B5CF6' }} />,
+      icon: <Brain className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
       category: 'new',
       actionText: 'Setup Triggers',
       comingSoon: true,
@@ -77,7 +77,7 @@ export default function Campaigns() {
       id: 'ai-upsell-suggestions',
       title: 'AI Upsell Suggestions',
       description: 'Auto-pick the most relevant products to recommend from your entire catalog',
-      icon: <Sparkles className="w-8 h-8" style={{ color: '#FFD700' }} />,
+      icon: <Sparkles className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
       category: 'new',
       actionText: 'Enable AI Upsells',
       comingSoon: true,
@@ -87,7 +87,7 @@ export default function Campaigns() {
       id: 'dynamic-segmentation',
       title: 'Dynamic Segmentation',
       description: 'Auto-segment customers into groups: first-timers, loyal buyers, discount seekers',
-      icon: <Users className="w-8 h-8" style={{ color: '#00D4FF' }} />,
+      icon: <Users className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
       category: 'new',
       actionText: 'View Segments',
       comingSoon: true,
@@ -97,7 +97,7 @@ export default function Campaigns() {
       id: 'multi-channel-repurposing',
       title: 'Multi-Channel Repurposing',
       description: 'Convert one product copy into multiple formats: ad copy → social → email → SMS',
-      icon: <RotateCcw className="w-8 h-8" style={{ color: '#FF0080' }} />,
+      icon: <RotateCcw className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
       category: 'new',
       actionText: 'Generate Variants',
       comingSoon: true,
@@ -183,7 +183,9 @@ export default function Campaigns() {
             <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
-                  {tool.icon}
+                  <div className="hover:drop-shadow-[0_0_8px_rgba(101,219,255,0.4)] transition-all duration-300">
+                    {tool.icon}
+                  </div>
                   <CardTitle className="text-white font-bold text-lg" data-testid={`text-title-${tool.id}`}>
                     {tool.title}
                   </CardTitle>
@@ -225,8 +227,8 @@ export default function Campaigns() {
       <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20 p-6">
           <div className="flex items-center space-x-4">
-            <div className="p-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600">
-              <TrendingUp className="w-6 h-6 text-white" />
+            <div className="p-3 rounded-full bg-slate-800/50 hover:drop-shadow-[0_0_8px_rgba(101,219,255,0.4)] transition-all duration-300">
+              <TrendingUp className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />
             </div>
             <div>
               <h3 className="text-white font-bold text-xl">245%</h3>
@@ -237,8 +239,8 @@ export default function Campaigns() {
         
         <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20 p-6">
           <div className="flex items-center space-x-4">
-            <div className="p-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-600">
-              <Target className="w-6 h-6 text-white" />
+            <div className="p-3 rounded-full bg-slate-800/50 hover:drop-shadow-[0_0_8px_rgba(101,219,255,0.4)] transition-all duration-300">
+              <Target className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />
             </div>
             <div>
               <h3 className="text-white font-bold text-xl">89%</h3>
@@ -249,8 +251,8 @@ export default function Campaigns() {
         
         <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20 p-6">
           <div className="flex items-center space-x-4">
-            <div className="p-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-600">
-              <Zap className="w-6 h-6 text-white" />
+            <div className="p-3 rounded-full bg-slate-800/50 hover:drop-shadow-[0_0_8px_rgba(101,219,255,0.4)] transition-all duration-300">
+              <Zap className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />
             </div>
             <div>
               <h3 className="text-white font-bold text-xl">12.3x</h3>
@@ -263,7 +265,9 @@ export default function Campaigns() {
       {/* Pro Features Notice */}
       <div className="mt-8 p-6 bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20">
         <div className="flex items-start space-x-4">
-          <Sparkles className="w-8 h-8" style={{ color: '#C1E8FF' }} />
+          <div className="hover:drop-shadow-[0_0_8px_rgba(101,219,255,0.4)] transition-all duration-300">
+            <Sparkles className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />
+          </div>
           <div>
             <h3 className="text-white font-bold text-lg mb-2">AI-Powered Campaign Intelligence</h3>
             <p className="text-slate-300 text-sm leading-relaxed">
