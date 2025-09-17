@@ -8,6 +8,7 @@ import AITools from "@/components/dashboard/ai-tools";
 import AutomationTools from "@/components/dashboard/automation-tools";
 import Campaigns from "@/components/dashboard/campaigns";
 import GrowthDashboard from "@/components/dashboard/growth-dashboard";
+import Settings from "@/components/dashboard/settings";
 import Profile from "@/components/dashboard/profile";
 import { useAuth } from "@/lib/auth";
 import { useDashboard, useSkeletonLoader, useConnectionStatus } from "@/hooks/useDashboard";
@@ -206,17 +207,7 @@ export default function Dashboard() {
       case "profile":
         return <Profile />;
       case "settings":
-        return (
-          <div className="text-center py-16">
-            <ShoppingCart className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-2xl font-bold mb-2" data-testid="text-settings-title">Settings & Configuration</h3>
-            <p className="text-muted-foreground mb-6">Configure your account and integrations</p>
-            <Button className="gradient-button" data-testid="button-connect-shopify">
-              <Plus className="w-4 h-4 mr-2" />
-              Connect Shopify
-            </Button>
-          </div>
-        );
+        return <Settings />;
       default:
         return <GrowthDashboard />;
     }
