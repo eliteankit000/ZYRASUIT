@@ -106,7 +106,6 @@ export default function Sidebar({ activeTab, onTabChange, user, isOpen, onClose 
     { id: "overview", label: "Dashboard", icon: <Home className="w-5 h-5" /> },
     { id: "ai-tools", label: "AI Tools", icon: <Zap className="w-5 h-5" /> },
     { id: "automate", label: "Automate", icon: <Cog className="w-5 h-5" /> },
-    { id: "analytics", label: "Analytics", icon: <BarChart3 className="w-5 h-5" /> },
     { id: "campaigns", label: "Campaigns", icon: <Mail className="w-5 h-5" /> },
     { id: "products", label: "Products", icon: <Package className="w-5 h-5" /> },
     { id: "profile", label: "Profile", icon: <User className="w-5 h-5" /> },

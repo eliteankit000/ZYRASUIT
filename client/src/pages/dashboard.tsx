@@ -6,7 +6,7 @@ import { DashboardContentSkeleton } from "@/components/ui/skeleton";
 import Sidebar from "@/components/dashboard/sidebar";
 import AITools from "@/components/dashboard/ai-tools";
 import AutomationTools from "@/components/dashboard/automation-tools";
-import Analytics from "@/components/dashboard/analytics";
+import Campaigns from "@/components/dashboard/campaigns";
 import Profile from "@/components/dashboard/profile";
 import { useAuth } from "@/lib/auth";
 import { useDashboard, useSkeletonLoader, useConnectionStatus } from "@/hooks/useDashboard";
@@ -160,6 +160,8 @@ export default function Dashboard() {
       updateUsageStats("aiGenerationsUsed", 0); // Just tracking access, not usage
     } else if (toolName === "automate") {
       updateUsageStats("automationActionsUsed", 0);
+    } else if (toolName === "campaigns") {
+      updateUsageStats("campaignsUsed", 0);
     }
   };
 
@@ -182,9 +184,9 @@ export default function Dashboard() {
     },
     {
       icon: <ShoppingCart className="w-5 h-5" />,
-      title: "Email Campaigns",
-      description: "Create and send targeted email campaigns",
-      action: () => handleToolNavigation("campaigns", "Email Campaigns"),
+      title: "AI Campaigns",
+      description: "Automated email & SMS growth engine with AI targeting",
+      action: () => handleToolNavigation("campaigns", "AI Campaigns"),
       primary: false,
       toolName: "campaigns",
     },
@@ -237,8 +239,7 @@ export default function Dashboard() {
       overview: { title: "Dashboard", subtitle: "Welcome back! Here's your store overview." },
       "ai-tools": { title: "AI Tools", subtitle: "AI-powered content generation and optimization hub" },
       "automate": { title: "Automation Tools", subtitle: "Streamline your workflow with powerful automation features" },
-      analytics: { title: "Analytics", subtitle: "Track your optimization performance" },
-      campaigns: { title: "Campaigns", subtitle: "Manage your email and SMS campaigns" },
+      campaigns: { title: "AI Email & SMS Growth Engine", subtitle: "Automate customer communications with intelligent campaigns" },
       products: { title: "Products", subtitle: "Manage your product catalog" },
       profile: { title: "Profile", subtitle: "Manage your account and subscription" },
       settings: { title: "Settings", subtitle: "Configure your account and integrations" },
@@ -252,20 +253,8 @@ export default function Dashboard() {
         return <AITools />;
       case "automate":
         return <AutomationTools />;
-      case "analytics":
-        return <Analytics />;
       case "campaigns":
-        return (
-          <div className="text-center py-16">
-            <ShoppingCart className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-2xl font-bold mb-2" data-testid="text-campaigns-title">Email & SMS Campaigns</h3>
-            <p className="text-muted-foreground mb-6">Create and manage your marketing campaigns</p>
-            <Button className="gradient-button" data-testid="button-create-campaign">
-              <Plus className="w-4 h-4 mr-2" />
-              Create Campaign
-            </Button>
-          </div>
-        );
+        return <Campaigns />;
       case "products":
         return (
           <div className="text-center py-16">
