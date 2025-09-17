@@ -177,13 +177,13 @@ export default function Campaigns() {
         {campaignTools.map((tool) => (
           <Card 
             key={tool.id} 
-            className="relative bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-105 border-slate-700/50"
+            className="relative bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl transition-all duration-300 hover:scale-105 border-slate-700/50"
             data-testid={`card-campaign-${tool.id}`}
           >
             <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="hover:drop-shadow-[0_0_8px_rgba(101,219,255,0.4)] transition-all duration-300">
+                  <div className="transition-all duration-300">
                     {tool.icon}
                   </div>
                   <CardTitle className="text-white font-bold text-lg" data-testid={`text-title-${tool.id}`}>
@@ -210,8 +210,8 @@ export default function Campaigns() {
                 disabled={tool.comingSoon || campaignMutation.isPending}
                 className={`w-full font-medium transition-all duration-300 ${
                   tool.comingSoon
-                    ? "bg-black hover:bg-black text-white hover:shadow-cyan-400/30 hover:scale-105"
-                    : "bg-[#C1E8FF] hover:bg-[#C1E8FF] text-indigo-900 hover:shadow-cyan-400/30 hover:scale-105"
+                    ? "bg-black hover:bg-black text-white hover:scale-105"
+                    : "bg-[#C1E8FF] hover:bg-[#C1E8FF] text-indigo-900 hover:scale-105"
                 }`}
                 data-testid={`button-action-${tool.id}`}
                 title={tool.tooltip}
@@ -225,9 +225,9 @@ export default function Campaigns() {
 
       {/* Stats Overview */}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20 p-6">
+        <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl p-6">
           <div className="flex items-center space-x-4">
-            <div className="p-3 rounded-full bg-slate-800/50 hover:drop-shadow-[0_0_8px_rgba(101,219,255,0.4)] transition-all duration-300">
+            <div className="p-3 rounded-full bg-slate-800/50 transition-all duration-300">
               <TrendingUp className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />
             </div>
             <div>
@@ -237,9 +237,9 @@ export default function Campaigns() {
           </div>
         </Card>
         
-        <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20 p-6">
+        <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl p-6">
           <div className="flex items-center space-x-4">
-            <div className="p-3 rounded-full bg-slate-800/50 hover:drop-shadow-[0_0_8px_rgba(101,219,255,0.4)] transition-all duration-300">
+            <div className="p-3 rounded-full bg-slate-800/50 transition-all duration-300">
               <Target className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />
             </div>
             <div>
@@ -249,9 +249,9 @@ export default function Campaigns() {
           </div>
         </Card>
         
-        <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20 p-6">
+        <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl p-6">
           <div className="flex items-center space-x-4">
-            <div className="p-3 rounded-full bg-slate-800/50 hover:drop-shadow-[0_0_8px_rgba(101,219,255,0.4)] transition-all duration-300">
+            <div className="p-3 rounded-full bg-slate-800/50 transition-all duration-300">
               <Zap className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />
             </div>
             <div>
@@ -263,9 +263,9 @@ export default function Campaigns() {
       </div>
 
       {/* Pro Features Notice */}
-      <div className="mt-8 p-6 bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20">
+      <div className="mt-8 p-6 bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl">
         <div className="flex items-start space-x-4">
-          <div className="hover:drop-shadow-[0_0_8px_rgba(101,219,255,0.4)] transition-all duration-300">
+          <div className="transition-all duration-300">
             <Sparkles className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />
           </div>
           <div>
