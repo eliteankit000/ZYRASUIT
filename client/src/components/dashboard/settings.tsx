@@ -50,7 +50,7 @@ export default function Settings() {
       id: 'profile-account',
       title: 'Profile & Account',
       description: 'Manage your personal information, connected stores, and language preferences',
-      icon: <User className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <User className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       features: ['Edit Profile (name, email, image)', 'Change Password', 'Connected Stores (Shopify, WooCommerce)', 'Multi-language UI + Auto-translation'],
       actionText: 'Manage Profile',
       category: 'account'
@@ -59,7 +59,7 @@ export default function Settings() {
       id: 'subscription-billing',
       title: 'Subscription & Billing',
       description: 'View current plan, upgrade options, billing history, and payment methods',
-      icon: <CreditCard className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <CreditCard className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       features: ['Current Plan Overview', 'Upgrade/Downgrade Plans', 'Billing History & Invoices', 'Payment Method Management'],
       actionText: 'View Billing',
       category: 'billing'
@@ -68,7 +68,7 @@ export default function Settings() {
       id: 'ai-preferences',
       title: 'AI Preferences',
       description: 'Customize AI behavior, brand voice, content style, and automation settings',
-      icon: <Brain className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <Brain className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       features: ['Brand Voice Memory (Luxury, Casual, Gen Z)', 'Default Content Style (Sales, SEO)', 'Auto-save AI Outputs', 'Scheduled AI Updates (3-6 months)'],
       actionText: 'Configure AI',
       category: 'preferences'
@@ -77,7 +77,7 @@ export default function Settings() {
       id: 'notifications-alerts',
       title: 'Notifications & Alerts',
       description: 'Control email notifications, in-app alerts, and mobile push settings',
-      icon: <Bell className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <Bell className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       features: ['Email Notifications (Campaigns, Billing)', 'In-app Performance Alerts', 'Mobile Push Notifications', 'AI Recommendation Alerts'],
       actionText: 'Set Notifications',
       category: 'preferences'
@@ -86,7 +86,7 @@ export default function Settings() {
       id: 'integrations',
       title: 'Integrations',
       description: 'Connect email providers, SMS services, analytics tools, and automation platforms',
-      icon: <Zap className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <Zap className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       features: ['Email (Gmail, Outlook, SMTP)', 'SMS (Twilio, Vonage)', 'Analytics (Google Analytics, Meta Pixel)', 'Zapier / Make Automation'],
       actionText: 'Manage Integrations',
       category: 'integrations'
@@ -95,7 +95,7 @@ export default function Settings() {
       id: 'security',
       title: 'Security',
       description: 'Two-factor authentication, login activity, API keys, and data management',
-      icon: <Shield className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <Shield className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       features: ['Two-Factor Authentication (2FA)', 'Login Activity Log', 'API Key Management', 'Data Export/Delete (GDPR)'],
       actionText: 'Security Settings',
       category: 'security'
@@ -104,7 +104,7 @@ export default function Settings() {
       id: 'support-resources',
       title: 'Support & Resources',
       description: 'Access help center, contact support, submit feedback, and join community',
-      icon: <HelpCircle className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <HelpCircle className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       features: ['Help Center (FAQs, Docs, Tutorials)', 'Contact Support (Live Chat, Email)', 'Feedback & Feature Requests', 'Community Forum / Slack'],
       actionText: 'Get Support',
       category: 'support'
@@ -192,16 +192,18 @@ export default function Settings() {
             data-testid={`card-settings-${card.id}`}
           >
             <CardHeader className="pb-4">
-              <div className="flex items-start justify-between">
+              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-3">
-                  <div className="transition-all duration-300">
-                    {card.icon}
+                  <div className="w-6 h-6 flex items-center justify-center transition-all duration-300">
+                    <div className="w-5 h-5 flex items-center justify-center">
+                      {card.icon}
+                    </div>
                   </div>
                   <div className="flex-1">
-                    <CardTitle className="text-white font-bold text-lg" data-testid={`text-title-${card.id}`}>
+                    <CardTitle className="text-white font-bold text-lg leading-none" data-testid={`text-title-${card.id}`}>
                       {card.title}
                     </CardTitle>
-                    <div className="flex items-center space-x-2 mt-1">
+                    <div className="flex items-center space-x-2 mt-2">
                       <Badge 
                         variant="secondary" 
                         className="text-xs px-2 py-1 rounded-full bg-blue-500/20 text-blue-400 capitalize"
@@ -246,7 +248,7 @@ export default function Settings() {
         <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl p-6">
           <div className="flex items-center space-x-4">
             <div className="p-3 rounded-full bg-slate-800/50 transition-all duration-300">
-              <Store className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />
+              <Store className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />
             </div>
             <div>
               <h3 className="text-white font-bold text-lg">2 Stores</h3>
@@ -258,7 +260,7 @@ export default function Settings() {
         <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl p-6">
           <div className="flex items-center space-x-4">
             <div className="p-3 rounded-full bg-slate-800/50 transition-all duration-300">
-              <Zap className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />
+              <Zap className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />
             </div>
             <div>
               <h3 className="text-white font-bold text-lg">8 Active</h3>
@@ -270,7 +272,7 @@ export default function Settings() {
         <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl p-6">
           <div className="flex items-center space-x-4">
             <div className="p-3 rounded-full bg-slate-800/50 transition-all duration-300">
-              <Shield className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />
+              <Shield className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />
             </div>
             <div>
               <h3 className="text-white font-bold text-lg">Secure</h3>
@@ -282,9 +284,11 @@ export default function Settings() {
 
       {/* Account Status */}
       <div className="mt-8 p-6 bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl">
-        <div className="flex items-start space-x-4">
-          <div className="transition-all duration-300">
-            <SettingsIcon className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />
+        <div className="flex items-center space-x-3">
+          <div className="w-6 h-6 flex items-center justify-center transition-all duration-300">
+            <div className="w-5 h-5 flex items-center justify-center">
+              <SettingsIcon className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />
+            </div>
           </div>
           <div>
             <h3 className="text-white font-bold text-lg mb-2">Account Configuration</h3>
