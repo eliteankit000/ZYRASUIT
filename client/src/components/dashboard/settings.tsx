@@ -203,17 +203,15 @@ export default function Settings() {
                     <CardTitle className="text-white font-bold text-lg leading-none" data-testid={`text-title-${card.id}`}>
                       {card.title}
                     </CardTitle>
-                    <div className="flex items-center space-x-2 mt-2">
-                      <Badge 
-                        variant="secondary" 
-                        className="text-xs px-2 py-1 rounded-full bg-blue-500/20 text-blue-400 capitalize"
-                        data-testid={`badge-category-${card.id}`}
-                      >
-                        {card.category}
-                      </Badge>
-                    </div>
                   </div>
                 </div>
+                <Badge 
+                  variant="secondary" 
+                  className="text-xs px-2 py-1 rounded-full bg-blue-500/20 text-blue-400 capitalize"
+                  data-testid={`badge-category-${card.id}`}
+                >
+                  {card.category}
+                </Badge>
               </div>
               <CardDescription className="text-slate-300 mt-2 mb-4" data-testid={`text-description-${card.id}`}>
                 {card.description}
