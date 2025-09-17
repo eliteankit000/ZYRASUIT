@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Zap, TrendingUp, ShoppingCart, Eye, RotateCcw, Plus, Bell, Menu, Wifi, WifiOff } from "lucide-react";
+import { Zap, TrendingUp, ShoppingCart, Eye, RotateCcw, Plus, Bell, Menu, Wifi, WifiOff, X, CheckCircle } from "lucide-react";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -25,6 +25,52 @@ export default function Dashboard() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Notification Center State
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      title: "✨ New A/B test results ready",
+      message: "Your product description test shows 23% higher engagement",
+      timestamp: "2 hours ago",
+      read: false,
+      type: "success"
+    },
+    {
+      id: 2,
+      title: "⚡ Your trial ends in 3 days",
+      message: "Upgrade to Pro to continue using all premium features",
+      timestamp: "5 hours ago",
+      read: false,
+      type: "warning"
+    },
+    {
+      id: 3,
+      title: "💰 Cart recovery campaign recovered $120",
+      message: "Your automated email sequence converted 8 abandoned carts",
+      timestamp: "1 day ago",
+      read: false,
+      type: "success"
+    },
+    {
+      id: 4,
+      title: "🚀 SEO optimization completed",
+      message: "15 product descriptions optimized for better search rankings",
+      timestamp: "2 days ago",
+      read: true,
+      type: "info"
+    },
+    {
+      id: 5,
+      title: "📊 Weekly performance report",
+      message: "Your store metrics improved by 12% this week",
+      timestamp: "3 days ago", 
+      read: true,
+      type: "info"
+    }
+  ]);
+  const notificationRef = useRef<HTMLDivElement>(null);
 
   // Real-time dashboard data
   const {
@@ -44,6 +90,43 @@ export default function Dashboard() {
 
   // Connection status monitoring
   const { isOnline } = useConnectionStatus();
+
+  // Notification Center Functions
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const markAsRead = (id: number) => {
+    setNotifications(prev => 
+      prev.map(notification => 
+        notification.id === id 
+          ? { ...notification, read: true }
+          : notification
+      )
+    );
+  };
+
+  const clearAllNotifications = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    toast({
+      description: "All notifications marked as read",
+    });
+  };
+
+  const toggleNotifications = () => {
+    setNotificationsOpen(!notificationsOpen);
+    logActivity("notifications_toggled", "User toggled notification center", "dashboard");
+  };
+
+  // Close notifications when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setNotificationsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
 
   // Handle responsive behavior - close sidebar on mobile by default
@@ -248,6 +331,120 @@ export default function Dashboard() {
               </div>
             </div>
             
+            {/* Notification Center */}
+            <div className="relative" ref={notificationRef}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleNotifications}
+                className="relative text-white hover:bg-white/10 transition-all duration-300 hover:scale-105"
+                data-testid="button-notifications"
+              >
+                <Bell className="w-5 h-5 stroke-2" />
+                {unreadCount > 0 && (
+                  <Badge 
+                    className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center p-0 border-0"
+                    data-testid="badge-notification-count"
+                  >
+                    {unreadCount}
+                  </Badge>
+                )}
+              </Button>
+
+              {/* Notification Dropdown */}
+              {notificationsOpen && (
+                <div className="absolute right-0 mt-2 w-80 md:w-96 bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-2xl border border-slate-700/50 z-50 transition-all duration-300 hover:shadow-cyan-500/30">
+                  <div className="p-4 border-b border-slate-700/50">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-white font-bold text-lg">Notifications</h3>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setNotificationsOpen(false)}
+                        className="text-slate-300 hover:text-white hover:bg-white/10 h-8 w-8"
+                        data-testid="button-close-notifications"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    {unreadCount > 0 && (
+                      <p className="text-slate-300 text-sm mt-1">
+                        {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="max-h-96 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="p-6 text-center">
+                        <Bell className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                        <p className="text-slate-300">No notifications yet</p>
+                      </div>
+                    ) : (
+                      notifications.map((notification) => (
+                        <div
+                          key={notification.id}
+                          className={`p-4 border-b border-slate-700/30 transition-all duration-300 hover:bg-white/5 ${
+                            !notification.read ? 'bg-blue-500/10' : 'opacity-70'
+                          }`}
+                          data-testid={`notification-${notification.id}`}
+                        >
+                          <div className="flex items-start justify-between space-x-3">
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-white font-bold text-sm mb-1 leading-tight">
+                                {notification.title}
+                              </h4>
+                              <p className="text-slate-300 text-sm mb-2 leading-relaxed">
+                                {notification.message}
+                              </p>
+                              <div className="flex items-center justify-between">
+                                <span className="text-slate-400 text-xs">
+                                  {notification.timestamp}
+                                </span>
+                                <div className="flex items-center space-x-2">
+                                  {!notification.read && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => markAsRead(notification.id)}
+                                      className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 text-xs h-6 px-2"
+                                      data-testid={`button-mark-read-${notification.id}`}
+                                    >
+                                      <CheckCircle className="w-3 h-3 mr-1" />
+                                      Mark read
+                                    </Button>
+                                  )}
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-[#C1E8FF] hover:text-white hover:bg-[#C1E8FF]/20 text-xs h-6 px-2"
+                                    data-testid={`button-details-${notification.id}`}
+                                  >
+                                    View Details
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  
+                  {notifications.some(n => !n.read) && (
+                    <div className="p-4 border-t border-slate-700/50">
+                      <Button
+                        onClick={clearAllNotifications}
+                        className="w-full bg-[#C1E8FF] hover:bg-[#C1E8FF]/90 text-indigo-900 font-medium transition-all duration-300 hover:scale-105"
+                        data-testid="button-clear-all"
+                      >
+                        Clear All Notifications
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
