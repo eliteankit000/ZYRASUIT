@@ -153,6 +153,19 @@ export const analytics = pgTable("analytics", {
   metadata: jsonb("metadata"),
 });
 
+export const notifications = pgTable("notifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  type: text("type").notNull().default("info"), // 'info', 'success', 'warning', 'error'
+  isRead: boolean("is_read").default(false),
+  actionUrl: text("action_url"), // Optional URL for "View Details" button
+  actionLabel: text("action_label"), // Optional label for action button
+  createdAt: timestamp("created_at").default(sql`NOW()`),
+  readAt: timestamp("read_at"),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).pick({
   email: true,
@@ -220,6 +233,12 @@ export const insertRealtimeMetricsSchema = createInsertSchema(realtimeMetrics).o
   timestamp: true,
 });
 
+export const insertNotificationSchema = createInsertSchema(notifications).omit({
+  id: true,
+  createdAt: true,
+  readAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -246,3 +265,5 @@ export type ToolsAccess = typeof toolsAccess.$inferSelect;
 export type InsertToolsAccess = z.infer<typeof insertToolsAccessSchema>;
 export type RealtimeMetrics = typeof realtimeMetrics.$inferSelect;
 export type InsertRealtimeMetrics = z.infer<typeof insertRealtimeMetricsSchema>;
+export type Notification = typeof notifications.$inferSelect;
+export type InsertNotification = z.infer<typeof insertNotificationSchema>;
