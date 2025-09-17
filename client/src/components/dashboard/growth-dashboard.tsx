@@ -36,7 +36,7 @@ export default function GrowthDashboard() {
       id: 'optimized-products',
       title: 'Optimized Products',
       description: 'Products enhanced by Zyra AI with improved descriptions and SEO',
-      icon: <ShoppingBag className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <ShoppingBag className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '247',
       change: '+23 this week',
       trend: 'up',
@@ -47,7 +47,7 @@ export default function GrowthDashboard() {
       id: 'email-performance',
       title: 'Email Performance',
       description: 'Email open rates and click-through performance analytics',
-      icon: <Mail className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <Mail className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '34.2%',
       change: '+5.7% CTR',
       trend: 'up',
@@ -58,7 +58,7 @@ export default function GrowthDashboard() {
       id: 'sms-conversion',
       title: 'SMS Conversion',
       description: 'SMS recovery campaigns and sales conversion tracking',
-      icon: <MessageSquare className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <MessageSquare className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '28.9%',
       change: '+12.3% conversion',
       trend: 'up',
@@ -69,7 +69,7 @@ export default function GrowthDashboard() {
       id: 'seo-keyword-density',
       title: 'SEO Keyword Density',
       description: 'Keyword optimization and search ranking improvements',
-      icon: <Search className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <Search className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '92%',
       change: '+15% this month',
       trend: 'up',
@@ -80,7 +80,7 @@ export default function GrowthDashboard() {
       id: 'content-roi',
       title: 'Content ROI Tracking',
       description: 'AI-generated content performance and sales impact measurement',
-      icon: <TrendingUp className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <TrendingUp className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '145%',
       change: '+34% ROI increase',
       trend: 'up',
@@ -91,7 +91,7 @@ export default function GrowthDashboard() {
       id: 'revenue-impact',
       title: 'Revenue Impact',
       description: 'Total revenue boost from Zyra AI optimizations this month',
-      icon: <DollarSign className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <DollarSign className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '$12,847',
       change: '+$3,200 this month',
       trend: 'up',
@@ -102,7 +102,7 @@ export default function GrowthDashboard() {
       id: 'seo-ranking-tracker',
       title: 'SEO Ranking Tracker',
       description: 'Track keyword positions and search visibility over time',
-      icon: <BarChart3 className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <BarChart3 className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: 'Rank #3',
       change: '+7 positions',
       trend: 'up',
@@ -113,7 +113,7 @@ export default function GrowthDashboard() {
       id: 'ab-test-results',
       title: 'A/B Test Results',
       description: 'Performance comparison of different content versions and optimization tests',
-      icon: <Zap className="w-6 h-6 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <Zap className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '67%',
       change: '+23% win rate',
       trend: 'up',
@@ -208,43 +208,40 @@ export default function GrowthDashboard() {
             data-testid={`card-analytics-${card.id}`}
           >
             <CardHeader className="pb-4">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="transition-all duration-300">
+              {/* Card Header with Consistent Flex Layout */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center w-8 h-8 transition-all duration-300">
                     {card.icon}
                   </div>
-                  <div>
-                    <CardTitle className="text-white font-bold text-lg" data-testid={`text-title-${card.id}`}>
-                      {card.title}
-                    </CardTitle>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <Badge 
-                        variant="secondary" 
-                        className={`text-xs px-2 py-1 rounded-full ${
-                          card.trend === 'up' 
-                            ? 'bg-green-500/20 text-green-400' 
-                            : card.trend === 'down'
-                            ? 'bg-red-500/20 text-red-400'
-                            : 'bg-slate-500/20 text-slate-400'
-                        }`}
-                        data-testid={`badge-trend-${card.id}`}
-                      >
-                        {card.change}
-                      </Badge>
-                    </div>
-                  </div>
+                  <CardTitle className="text-white font-bold text-lg flex items-center" data-testid={`text-title-${card.id}`}>
+                    {card.title}
+                  </CardTitle>
                 </div>
-                <div className="text-right">
+                <div className="text-right flex flex-col items-end gap-1">
                   <div className="text-2xl font-bold text-white" data-testid={`text-value-${card.id}`}>
                     {card.value}
                   </div>
+                  <Badge 
+                    variant="secondary" 
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      card.trend === 'up' 
+                        ? 'bg-green-500/20 text-green-400' 
+                        : card.trend === 'down'
+                        ? 'bg-red-500/20 text-red-400'
+                        : 'bg-slate-500/20 text-slate-400'
+                    }`}
+                    data-testid={`badge-trend-${card.id}`}
+                  >
+                    {card.change}
+                  </Badge>
                 </div>
               </div>
-              <CardDescription className="text-slate-300 mt-2" data-testid={`text-description-${card.id}`}>
+              <CardDescription className="text-slate-300 leading-relaxed ml-11" data-testid={`text-description-${card.id}`}>
                 {card.description}
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-0">
+            <CardContent className="pt-0 pb-6 px-6">
               <Button
                 onClick={() => handleAnalyticsAction(card.id)}
                 disabled={analyticsMutation.isPending}

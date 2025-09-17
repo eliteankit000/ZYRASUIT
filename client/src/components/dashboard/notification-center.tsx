@@ -125,7 +125,7 @@ export default function NotificationCenter({ className }: NotificationCenterProp
         size="icon"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "relative hover:bg-muted/50 transition-all duration-200",
+          "relative h-10 w-10 flex items-center justify-center hover:bg-muted/50 transition-all duration-200",
           isOpen && "bg-muted/50"
         )}
         data-testid="button-notification-center"
@@ -159,12 +159,15 @@ export default function NotificationCenter({ className }: NotificationCenterProp
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-border/30">
-            <h3 className="text-lg font-bold text-white">Notifications</h3>
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Bell className="w-5 h-5" />
+              Notifications
+            </h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsOpen(false)}
-              className="text-slate-300 hover:text-white h-8 w-8 p-0"
+              className="text-slate-300 hover:text-white h-8 w-8 p-0 flex items-center justify-center"
               data-testid="button-close-notifications"
             >
               <X className="w-4 h-4" />
@@ -174,9 +177,10 @@ export default function NotificationCenter({ className }: NotificationCenterProp
           {/* Notifications List */}
           <div className="max-h-96 overflow-y-auto">
             {notifications.length === 0 ? (
-              <div className="p-6 text-center">
-                <Bell className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+              <div className="p-8 text-center">
+                <Bell className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                 <p className="text-slate-300 text-sm">No notifications yet</p>
+                <p className="text-slate-400 text-xs mt-1">We'll notify you when something happens</p>
               </div>
             ) : (
               <div className="space-y-0">
