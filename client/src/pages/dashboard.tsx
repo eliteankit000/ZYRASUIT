@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DashboardContentSkeleton } from "@/components/ui/skeleton";
 import Sidebar from "@/components/dashboard/sidebar";
-import AIGenerator from "@/components/dashboard/ai-generator";
+import AITools from "@/components/dashboard/ai-tools";
 import SEOTools from "@/components/dashboard/seo-tools";
 import Analytics from "@/components/dashboard/analytics";
 import Profile from "@/components/dashboard/profile";
@@ -248,8 +248,8 @@ export default function Dashboard() {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case "ai-generator":
-        return <AIGenerator />;
+      case "ai-tools":
+        return <AITools />;
       case "seo-tools":
         return <SEOTools />;
       case "analytics":
