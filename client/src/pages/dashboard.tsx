@@ -34,10 +34,8 @@ export default function Dashboard() {
     trackToolAccess,
     logActivity,
     updateUsageStats,
-    refreshDashboard,
     lastUpdate,
     isTrackingTool,
-    isRefreshing,
   } = useDashboard();
 
   // Skeleton loader with delay
@@ -297,18 +295,6 @@ export default function Dashboard() {
                 <span className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-destructive rounded-full"></span>
               </Button>
               
-              <Button 
-                id="refreshBtn"
-                variant="outline" 
-                size="sm"
-                onClick={refreshDashboard}
-                disabled={isRefreshing}
-                className="text-xs transition-all duration-200 hover:scale-105 active:scale-95 hover:bg-accent hover:border-primary"
-                data-testid="button-refresh-dashboard"
-              >
-                <RotateCcw className={`w-3 h-3 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
-                {isRefreshing ? 'Refreshing…' : '🔄 Refresh'}
-              </Button>
             </div>
           </div>
         </header>
