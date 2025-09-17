@@ -18,48 +18,18 @@ export default function NotificationCenter({ className }: NotificationCenterProp
   const buttonRef = useRef<HTMLButtonElement>(null);
   const queryClient = useQueryClient();
 
-  // Sample notifications - TODO: Replace with real API data
-  const sampleNotifications: Notification[] = [
-    {
-      id: "1",
-      userId: "user1",
-      title: "✨ New A/B test results ready",
-      message: "Your latest email campaign A/B test has completed with significant results.",
-      type: "success",
-      isRead: false,
-      actionUrl: "/campaigns",
-      actionLabel: "View Results",
-      createdAt: new Date(Date.now() - 1000 * 60 * 15), // 15 minutes ago
-      readAt: null,
-    },
-    {
-      id: "2", 
-      userId: "user1",
-      title: "⚡ Your trial ends in 3 days",
-      message: "Upgrade now to continue accessing all premium features.",
-      type: "warning",
-      isRead: false,
-      actionUrl: "/profile",
-      actionLabel: "Upgrade Now",
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-      readAt: null,
-    },
-    {
-      id: "3",
-      userId: "user1", 
-      title: "💰 Cart recovery campaign recovered $120",
-      message: "Your automated cart recovery email brought back 3 customers.",
-      type: "success",
-      isRead: true,
-      actionUrl: "/campaigns",
-      actionLabel: "View Campaign",
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-      readAt: new Date(Date.now() - 1000 * 60 * 60 * 12), // Read 12 hours ago
-    },
-  ];
+  // Fetch notifications from API
+  const { data: notifications = [], isLoading: notificationsLoading } = useQuery<Notification[]>({
+    queryKey: ["/api/notifications"],
+    staleTime: 30000, // Cache for 30 seconds
+  });
 
-  const notifications = sampleNotifications; // TODO: Replace with useQuery
-  const unreadCount = notifications.filter(n => !n.isRead).length;
+  const { data: unreadData, isLoading: unreadLoading } = useQuery<{ count: number }>({
+    queryKey: ["/api/notifications/unread-count"],
+    staleTime: 30000,
+  });
+
+  const unreadCount = unreadData?.count || 0;
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -80,14 +50,45 @@ export default function NotificationCenter({ className }: NotificationCenterProp
     }
   }, [isOpen]);
 
+  // Mutations for notification actions
+  const markAsReadMutation = useMutation({
+    mutationFn: async (notificationId: string) => {
+      const response = await fetch(`/api/notifications/${notificationId}/read`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error("Failed to mark notification as read");
+      return response.json();
+    },
+    onSuccess: () => {
+      // Invalidate and refetch notification queries
+      queryClient.invalidateQueries({ queryKey: ["/api/notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/notifications/unread-count"] });
+    },
+  });
+
+  const clearAllMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch("/api/notifications/clear-all", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error("Failed to clear all notifications");
+      return response.json();
+    },
+    onSuccess: () => {
+      // Invalidate and refetch notification queries
+      queryClient.invalidateQueries({ queryKey: ["/api/notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/notifications/unread-count"] });
+    },
+  });
+
   const handleMarkAsRead = (notificationId: string) => {
-    // TODO: Implement mutation to mark as read
-    console.log("Mark as read:", notificationId);
+    markAsReadMutation.mutate(notificationId);
   };
 
   const handleClearAll = () => {
-    // TODO: Implement mutation to clear all notifications
-    console.log("Clear all notifications");
+    clearAllMutation.mutate();
   };
 
   const formatTimeAgo = (date: Date) => {

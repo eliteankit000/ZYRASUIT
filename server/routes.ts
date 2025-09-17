@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { insertUserSchema, insertProductSchema } from "@shared/schema";
+import { insertUserSchema, insertProductSchema, insertNotificationSchema } from "@shared/schema";
 import { storage } from "./storage";
 import { 
   testDatabaseConnection,
@@ -503,6 +503,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(analytics);
     } catch (error: any) {
       res.status(500).json({ message: "Failed to fetch analytics" });
+    }
+  });
+
+  // Notification routes
+  app.get("/api/notifications", requireAuth, async (req, res) => {
+    try {
+      const notifications = await storage.getNotifications(req.user!.id);
+      res.json(notifications);
+    } catch (error: any) {
+      console.error("Get notifications error:", error);
+      res.status(500).json({ message: "Failed to fetch notifications" });
+    }
+  });
+
+  app.get("/api/notifications/unread-count", requireAuth, async (req, res) => {
+    try {
+      const count = await storage.getUnreadNotificationCount(req.user!.id);
+      res.json({ count });
+    } catch (error: any) {
+      console.error("Get unread count error:", error);
+      res.status(500).json({ message: "Failed to fetch unread count" });
+    }
+  });
+
+  app.post("/api/notifications", requireAuth, async (req, res) => {
+    try {
+      const validation = insertNotificationSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ 
+          message: "Invalid notification data", 
+          errors: validation.error.errors 
+        });
+      }
+
+      const notificationData = { ...validation.data, userId: req.user!.id };
+      const notification = await storage.createNotification(notificationData);
+      res.json(notification);
+    } catch (error: any) {
+      console.error("Create notification error:", error);
+      res.status(500).json({ message: "Failed to create notification" });
+    }
+  });
+
+  app.patch("/api/notifications/:id/read", requireAuth, async (req, res) => {
+    try {
+      const notification = await storage.markNotificationAsRead(req.user!.id, req.params.id);
+      if (!notification) {
+        return res.status(404).json({ message: "Notification not found" });
+      }
+      res.json(notification);
+    } catch (error: any) {
+      console.error("Mark notification as read error:", error);
+      res.status(500).json({ message: "Failed to mark notification as read" });
+    }
+  });
+
+  app.post("/api/notifications/mark-all-read", requireAuth, async (req, res) => {
+    try {
+      await storage.markAllNotificationsAsRead(req.user!.id);
+      res.json({ message: "All notifications marked as read" });
+    } catch (error: any) {
+      console.error("Mark all notifications as read error:", error);
+      res.status(500).json({ message: "Failed to mark all notifications as read" });
+    }
+  });
+
+  app.delete("/api/notifications/:id", requireAuth, async (req, res) => {
+    try {
+      const deleted = await storage.deleteNotification(req.user!.id, req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Notification not found" });
+      }
+      res.json({ message: "Notification deleted successfully" });
+    } catch (error: any) {
+      console.error("Delete notification error:", error);
+      res.status(500).json({ message: "Failed to delete notification" });
+    }
+  });
+
+  app.post("/api/notifications/clear-all", requireAuth, async (req, res) => {
+    try {
+      await storage.clearAllNotifications(req.user!.id);
+      res.json({ message: "All notifications cleared successfully" });
+    } catch (error: any) {
+      console.error("Clear all notifications error:", error);
+      res.status(500).json({ message: "Failed to clear all notifications" });
     }
   });
 

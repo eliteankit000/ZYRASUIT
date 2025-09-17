@@ -12,11 +12,14 @@ import {
   type InsertCampaign,
   type Analytics,
   type InsertAnalytics,
+  type Notification,
+  type InsertNotification,
   users, 
   products, 
   seoMeta, 
   campaigns, 
-  analytics 
+  analytics,
+  notifications
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
@@ -56,6 +59,15 @@ export interface IStorage {
   // Analytics methods
   getAnalytics(userId: string, metricType?: string): Promise<Analytics[]>;
   createAnalytic(analytic: InsertAnalytics): Promise<Analytics>;
+
+  // Notification methods
+  getNotifications(userId: string): Promise<Notification[]>;
+  getUnreadNotificationCount(userId: string): Promise<number>;
+  createNotification(notification: InsertNotification): Promise<Notification>;
+  markNotificationAsRead(userId: string, notificationId: string): Promise<Notification | null>;
+  markAllNotificationsAsRead(userId: string): Promise<void>;
+  deleteNotification(userId: string, notificationId: string): Promise<boolean>;
+  clearAllNotifications(userId: string): Promise<void>;
 
   // Real-time Dashboard methods
   getDashboardData(userId: string): Promise<{
@@ -229,6 +241,35 @@ export class DatabaseStorage implements IStorage {
   async generateSampleMetrics(userId: string): Promise<void> {
     throw new Error("Dashboard data not available in DatabaseStorage - use MemStorage");
   }
+
+  // Notification methods - stub implementations since we're using MemStorage
+  async getNotifications(userId: string): Promise<Notification[]> {
+    throw new Error("Notification data not available in DatabaseStorage - use MemStorage");
+  }
+
+  async getUnreadNotificationCount(userId: string): Promise<number> {
+    throw new Error("Notification data not available in DatabaseStorage - use MemStorage");
+  }
+
+  async createNotification(notification: InsertNotification): Promise<Notification> {
+    throw new Error("Notification data not available in DatabaseStorage - use MemStorage");
+  }
+
+  async markNotificationAsRead(userId: string, notificationId: string): Promise<Notification | null> {
+    throw new Error("Notification data not available in DatabaseStorage - use MemStorage");
+  }
+
+  async markAllNotificationsAsRead(userId: string): Promise<void> {
+    throw new Error("Notification data not available in DatabaseStorage - use MemStorage");
+  }
+
+  async deleteNotification(userId: string, notificationId: string): Promise<boolean> {
+    throw new Error("Notification data not available in DatabaseStorage - use MemStorage");
+  }
+
+  async clearAllNotifications(userId: string): Promise<void> {
+    throw new Error("Notification data not available in DatabaseStorage - use MemStorage");
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -237,6 +278,7 @@ export class MemStorage implements IStorage {
   private seoMetas: Map<string, SeoMeta> = new Map();
   private campaigns: Map<string, Campaign> = new Map();
   private analyticsData: Map<string, Analytics> = new Map();
+  private notificationsData: Map<string, Notification> = new Map();
   
   // Real-time dashboard data storage
   private usageStats: Map<string, any> = new Map();
@@ -296,7 +338,7 @@ export class MemStorage implements IStorage {
     return this.products.get(id);
   }
 
-  async createProduct(product: InsertProduct): Promise<Product> {
+  async createProduct(product: InsertProduct & { userId: string }): Promise<Product> {
     const id = randomUUID();
     const newProduct: Product = {
       id,
@@ -575,6 +617,84 @@ export class MemStorage implements IStorage {
     }
     
     this.realtimeMetrics.set(userId, userMetrics);
+  }
+
+  // Notification methods implementation
+  async getNotifications(userId: string): Promise<Notification[]> {
+    return Array.from(this.notificationsData.values())
+      .filter(notification => notification.userId === userId)
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+  }
+
+  async getUnreadNotificationCount(userId: string): Promise<number> {
+    return Array.from(this.notificationsData.values())
+      .filter(notification => notification.userId === userId && !notification.isRead)
+      .length;
+  }
+
+  async createNotification(notificationData: InsertNotification): Promise<Notification> {
+    const id = randomUUID();
+    const notification: Notification = {
+      id,
+      ...notificationData,
+      type: notificationData.type || "info", // Provide default value for required field
+      actionUrl: notificationData.actionUrl || null, // Ensure not undefined
+      actionLabel: notificationData.actionLabel || null, // Ensure not undefined
+      isRead: false,
+      createdAt: new Date(),
+      readAt: null,
+    };
+    this.notificationsData.set(id, notification);
+    return notification;
+  }
+
+  async markNotificationAsRead(userId: string, notificationId: string): Promise<Notification | null> {
+    const notification = this.notificationsData.get(notificationId);
+    if (!notification || notification.userId !== userId) {
+      return null; // Not found or doesn't belong to user
+    }
+    
+    const updatedNotification = {
+      ...notification,
+      isRead: true,
+      readAt: new Date(),
+    };
+    
+    this.notificationsData.set(notificationId, updatedNotification);
+    return updatedNotification;
+  }
+
+  async markAllNotificationsAsRead(userId: string): Promise<void> {
+    const userNotifications = Array.from(this.notificationsData.values())
+      .filter(notification => notification.userId === userId && !notification.isRead);
+    
+    for (const notification of userNotifications) {
+      const updatedNotification = {
+        ...notification,
+        isRead: true,
+        readAt: new Date(),
+      };
+      this.notificationsData.set(notification.id, updatedNotification);
+    }
+  }
+
+  async deleteNotification(userId: string, notificationId: string): Promise<boolean> {
+    const notification = this.notificationsData.get(notificationId);
+    if (!notification || notification.userId !== userId) {
+      return false; // Not found or doesn't belong to user
+    }
+    
+    this.notificationsData.delete(notificationId);
+    return true; // Successfully deleted
+  }
+
+  async clearAllNotifications(userId: string): Promise<void> {
+    const userNotifications = Array.from(this.notificationsData.values())
+      .filter(notification => notification.userId === userId);
+    
+    for (const notification of userNotifications) {
+      this.notificationsData.delete(notification.id);
+    }
   }
 }
 
