@@ -157,7 +157,7 @@ export default function Campaigns() {
   };
 
   return (
-    <div className="p-6 space-y-6" style={{ backgroundColor: '#0D0D1F', minHeight: '100vh' }}>
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="space-y-3 mb-8">
         <div className="flex items-center space-x-3">
@@ -168,7 +168,7 @@ export default function Campaigns() {
             <h1 className="text-4xl font-bold text-white tracking-tight">
               AI Email & SMS Growth Engine
             </h1>
-            <p className="text-cyan-300 text-lg">
+            <p className="text-slate-300 text-lg">
               Automate your customer communications with intelligent campaigns and behavioral triggers
             </p>
           </div>
@@ -176,61 +176,48 @@ export default function Campaigns() {
       </div>
 
       {/* Campaign Tools Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
         {campaignTools.map((tool) => (
           <Card 
             key={tool.id} 
-            className="relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-cyan-500/20 rounded-xl shadow-2xl hover:shadow-cyan-500/25 transition-all duration-500 hover:scale-105 hover:border-cyan-400/40 backdrop-blur-sm"
-            style={{ backgroundColor: 'rgba(13, 13, 31, 0.95)' }}
+            className="relative bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-105 border-slate-700/50"
             data-testid={`card-campaign-${tool.id}`}
           >
-            {/* Glow effect on hover */}
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-500" />
-            
-            <CardHeader className="pb-4 relative z-10">
+            <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 rounded-lg bg-slate-800/50 border border-cyan-500/30">
-                    {tool.icon}
-                  </div>
-                  <CardTitle className="text-white font-bold text-lg leading-tight" data-testid={`text-title-${tool.id}`}>
+                  {tool.icon}
+                  <CardTitle className="text-white font-bold text-lg" data-testid={`text-title-${tool.id}`}>
                     {tool.title}
                   </CardTitle>
                 </div>
                 {tool.comingSoon && (
                   <Badge 
                     variant="secondary" 
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs px-3 py-1 rounded-full border-0 shadow-lg"
+                    className="bg-slate-700 text-slate-200 text-xs px-2 py-1 rounded-full"
                     data-testid={`badge-coming-soon-${tool.id}`}
                   >
                     Coming Soon
                   </Badge>
                 )}
               </div>
-              <CardDescription className="text-cyan-100 mt-3 leading-relaxed" data-testid={`text-description-${tool.id}`}>
+              <CardDescription className="text-slate-300 mt-2" data-testid={`text-description-${tool.id}`}>
                 {tool.description}
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-0 relative z-10">
+            <CardContent className="pt-0">
               <Button
                 onClick={() => handleToolAction(tool.id)}
                 disabled={tool.comingSoon || campaignMutation.isPending}
-                className={`w-full font-semibold transition-all duration-300 ${
+                className={`w-full font-medium transition-all duration-300 ${
                   tool.comingSoon
-                    ? "bg-slate-700 hover:bg-slate-600 text-slate-300 border border-slate-600"
-                    : "bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg hover:shadow-cyan-500/50 border-0"
-                } rounded-lg py-3`}
+                    ? "bg-black hover:bg-black text-white hover:shadow-cyan-400/30 hover:scale-105"
+                    : "bg-[#C1E8FF] hover:bg-[#C1E8FF] text-indigo-900 hover:shadow-cyan-400/30 hover:scale-105"
+                }`}
                 data-testid={`button-action-${tool.id}`}
                 title={tool.tooltip}
               >
-                {campaignMutation.isPending ? (
-                  <span className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Processing...</span>
-                  </span>
-                ) : (
-                  tool.actionText
-                )}
+                {campaignMutation.isPending ? "Processing..." : tool.actionText}
               </Button>
             </CardContent>
           </Card>
@@ -239,50 +226,50 @@ export default function Campaigns() {
 
       {/* Stats Overview */}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-cyan-500/20 rounded-xl p-6" style={{ backgroundColor: 'rgba(13, 13, 31, 0.95)' }}>
+        <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20 p-6">
           <div className="flex items-center space-x-4">
             <div className="p-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <div>
               <h3 className="text-white font-bold text-xl">245%</h3>
-              <p className="text-cyan-300 text-sm">Avg. Revenue Increase</p>
+              <p className="text-slate-300 text-sm">Avg. Revenue Increase</p>
             </div>
           </div>
         </Card>
         
-        <Card className="bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-purple-500/20 rounded-xl p-6" style={{ backgroundColor: 'rgba(13, 13, 31, 0.95)' }}>
+        <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20 p-6">
           <div className="flex items-center space-x-4">
             <div className="p-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-600">
               <Target className="w-6 h-6 text-white" />
             </div>
             <div>
               <h3 className="text-white font-bold text-xl">89%</h3>
-              <p className="text-purple-300 text-sm">Cart Recovery Rate</p>
+              <p className="text-slate-300 text-sm">Cart Recovery Rate</p>
             </div>
           </div>
         </Card>
         
-        <Card className="bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-green-500/20 rounded-xl p-6" style={{ backgroundColor: 'rgba(13, 13, 31, 0.95)' }}>
+        <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20 p-6">
           <div className="flex items-center space-x-4">
             <div className="p-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-600">
               <Zap className="w-6 h-6 text-white" />
             </div>
             <div>
               <h3 className="text-white font-bold text-xl">12.3x</h3>
-              <p className="text-green-300 text-sm">Email Engagement</p>
+              <p className="text-slate-300 text-sm">Email Engagement</p>
             </div>
           </div>
         </Card>
       </div>
 
       {/* Pro Features Notice */}
-      <div className="mt-8 p-6 bg-gradient-to-r from-purple-900/30 to-pink-900/30 rounded-xl border border-purple-500/30 backdrop-blur-sm">
+      <div className="mt-8 p-6 bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl shadow-lg shadow-cyan-500/20">
         <div className="flex items-start space-x-4">
-          <Sparkles className="w-8 h-8 text-purple-400 mt-1 flex-shrink-0" />
+          <Sparkles className="w-8 h-8" style={{ color: '#C1E8FF' }} />
           <div>
             <h3 className="text-white font-bold text-lg mb-2">AI-Powered Campaign Intelligence</h3>
-            <p className="text-purple-200 text-sm leading-relaxed">
+            <p className="text-slate-300 text-sm leading-relaxed">
               Our advanced AI analyzes customer behavior, purchase patterns, and engagement history to automatically 
               optimize your email and SMS campaigns. From behavioral triggers to dynamic segmentation, 
               every message is personalized for maximum conversion.
