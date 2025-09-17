@@ -156,7 +156,7 @@ export default function Dashboard() {
     );
     
     // Update usage stats based on tool type
-    if (toolName === "ai-generator") {
+    if (toolName === "ai-tools") {
       updateUsageStats("aiGenerationsUsed", 0); // Just tracking access, not usage
     } else if (toolName === "seo-tools") {
       updateUsageStats("seoOptimizationsUsed", 0);
@@ -168,9 +168,9 @@ export default function Dashboard() {
       icon: <Zap className="w-5 h-5" />,
       title: "AI Product Generator",
       description: "Generate compelling product descriptions in seconds",
-      action: () => handleToolNavigation("ai-generator", "AI Product Generator"),
+      action: () => handleToolNavigation("ai-tools", "AI Tools"),
       primary: true,
-      toolName: "ai-generator",
+      toolName: "ai-tools",
     },
     {
       icon: <TrendingUp className="w-5 h-5" />,
@@ -235,7 +235,7 @@ export default function Dashboard() {
   const getPageTitle = () => {
     const titles = {
       overview: { title: "Dashboard", subtitle: "Welcome back! Here's your store overview." },
-      "ai-generator": { title: "AI Generator", subtitle: "Create compelling product descriptions with AI" },
+      "ai-tools": { title: "AI Tools", subtitle: "AI-powered content generation and optimization hub" },
       "seo-tools": { title: "SEO Tools", subtitle: "Optimize your products for search engines" },
       analytics: { title: "Analytics", subtitle: "Track your optimization performance" },
       campaigns: { title: "Campaigns", subtitle: "Manage your email and SMS campaigns" },
