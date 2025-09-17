@@ -161,9 +161,6 @@ export default function Campaigns() {
       {/* Header */}
       <div className="space-y-3 mb-8">
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
-            <Mail className="w-6 h-6 text-white" />
-          </div>
           <div>
             <h1 className="text-4xl font-bold text-white tracking-tight">
               AI Email & SMS Growth Engine
