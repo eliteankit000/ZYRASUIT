@@ -15,7 +15,8 @@ import {
   Settings, 
   LogOut,
   User,
-  X
+  X,
+  Cog
 } from "lucide-react";
 
 interface SidebarProps {
@@ -104,7 +105,7 @@ export default function Sidebar({ activeTab, onTabChange, user, isOpen, onClose 
   const navItems = [
     { id: "overview", label: "Dashboard", icon: <Home className="w-5 h-5" /> },
     { id: "ai-tools", label: "AI Tools", icon: <Zap className="w-5 h-5" /> },
-    { id: "seo-tools", label: "SEO Tools", icon: <Search className="w-5 h-5" /> },
+    { id: "automate", label: "Automate", icon: <Cog className="w-5 h-5" /> },
     { id: "analytics", label: "Analytics", icon: <BarChart3 className="w-5 h-5" /> },
     { id: "campaigns", label: "Campaigns", icon: <Mail className="w-5 h-5" /> },
     { id: "products", label: "Products", icon: <Package className="w-5 h-5" /> },

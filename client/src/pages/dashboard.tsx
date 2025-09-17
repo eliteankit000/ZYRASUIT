@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { DashboardContentSkeleton } from "@/components/ui/skeleton";
 import Sidebar from "@/components/dashboard/sidebar";
 import AITools from "@/components/dashboard/ai-tools";
-import SEOTools from "@/components/dashboard/seo-tools";
+import AutomationTools from "@/components/dashboard/automation-tools";
 import Analytics from "@/components/dashboard/analytics";
 import Profile from "@/components/dashboard/profile";
 import { useAuth } from "@/lib/auth";
@@ -158,8 +158,8 @@ export default function Dashboard() {
     // Update usage stats based on tool type
     if (toolName === "ai-tools") {
       updateUsageStats("aiGenerationsUsed", 0); // Just tracking access, not usage
-    } else if (toolName === "seo-tools") {
-      updateUsageStats("seoOptimizationsUsed", 0);
+    } else if (toolName === "automate") {
+      updateUsageStats("automationActionsUsed", 0);
     }
   };
 
@@ -174,11 +174,11 @@ export default function Dashboard() {
     },
     {
       icon: <TrendingUp className="w-5 h-5" />,
-      title: "SEO Optimization",
-      description: "Optimize titles and meta descriptions for better rankings",
-      action: () => handleToolNavigation("seo-tools", "SEO Optimization"),
+      title: "Automation Tools", 
+      description: "Streamline bulk operations and intelligent optimizations",
+      action: () => handleToolNavigation("automate", "Automation Tools"),
       primary: false,
-      toolName: "seo-tools",
+      toolName: "automate",
     },
     {
       icon: <ShoppingCart className="w-5 h-5" />,
@@ -236,7 +236,7 @@ export default function Dashboard() {
     const titles = {
       overview: { title: "Dashboard", subtitle: "Welcome back! Here's your store overview." },
       "ai-tools": { title: "AI Tools", subtitle: "AI-powered content generation and optimization hub" },
-      "seo-tools": { title: "SEO Tools", subtitle: "Optimize your products for search engines" },
+      "automate": { title: "Automation Tools", subtitle: "Streamline your workflow with powerful automation features" },
       analytics: { title: "Analytics", subtitle: "Track your optimization performance" },
       campaigns: { title: "Campaigns", subtitle: "Manage your email and SMS campaigns" },
       products: { title: "Products", subtitle: "Manage your product catalog" },
@@ -250,8 +250,8 @@ export default function Dashboard() {
     switch (activeTab) {
       case "ai-tools":
         return <AITools />;
-      case "seo-tools":
-        return <SEOTools />;
+      case "automate":
+        return <AutomationTools />;
       case "analytics":
         return <Analytics />;
       case "campaigns":
