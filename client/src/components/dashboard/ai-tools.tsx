@@ -267,38 +267,42 @@ export default function AITools() {
       </div>
 
       {/* Tools Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {aiTools.map((tool) => (
           <Card 
             key={tool.id} 
-            className={`group relative overflow-hidden border-0 bg-gradient-to-br ${tool.gradient} p-[1px] hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]`}
+            className="group relative overflow-hidden border-0 bg-gradient-to-br from-[#021024] via-[#052659] to-[#021024] rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
             data-testid={`card-${tool.id}`}
           >
-            <div className="bg-card/95 backdrop-blur-sm h-full rounded-lg p-6 space-y-4">
+            <div className="h-full p-6 space-y-4">
               <CardHeader className="p-0">
-                <div className="flex items-start justify-between">
-                  <div className={`p-3 rounded-lg bg-gradient-to-br ${tool.gradient} text-white`}>
-                    {tool.icon}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="text-[#C1E8FF]">
+                      {tool.icon}
+                    </div>
+                    <CardTitle className="text-xl font-semibold text-white">
+                      {tool.title}
+                    </CardTitle>
                   </div>
                   {tool.comingSoon && (
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge className="bg-slate-700 text-slate-200 text-xs px-2 py-1 rounded-full hover:bg-slate-700">
                       Coming Soon
                     </Badge>
                   )}
                 </div>
-                <CardTitle className="text-xl font-semibold group-hover:text-primary transition-colors">
-                  {tool.title}
-                </CardTitle>
-                <CardDescription className="text-sm leading-relaxed">
+                <CardDescription className="text-slate-300 text-sm leading-relaxed">
                   {tool.description}
                 </CardDescription>
               </CardHeader>
               
               <Button
                 onClick={() => handleToolAction(tool.id)}
-                disabled={generateMutation.isPending}
-                className={`w-full bg-gradient-to-r ${tool.gradient} hover:shadow-lg transition-all duration-200 text-white border-0 ${
-                  tool.comingSoon ? 'opacity-70' : 'hover:scale-105 active:scale-95'
+                disabled={generateMutation.isPending || tool.comingSoon}
+                className={`w-full transition-all duration-200 border-0 font-medium ${
+                  tool.comingSoon 
+                    ? 'bg-black text-white opacity-50 cursor-not-allowed' 
+                    : 'bg-[#C1E8FF] text-[#052659] hover:shadow-lg hover:scale-105 active:scale-95'
                 }`}
                 data-testid={`button-${tool.id}`}
               >
