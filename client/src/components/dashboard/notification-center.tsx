@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Notification } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
 
 interface NotificationCenterProps {
   className?: string;
@@ -17,6 +18,7 @@ export default function NotificationCenter({ className }: NotificationCenterProp
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   // Fetch notifications from API
   const { data: notifications = [], isLoading: notificationsLoading } = useQuery<Notification[]>({
