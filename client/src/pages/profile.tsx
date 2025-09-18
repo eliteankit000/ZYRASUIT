@@ -254,7 +254,7 @@ export default function ProfilePage() {
 
           <Tabs defaultValue="general" className="space-y-6">
             <TabsList className="grid w-full grid-cols-4 bg-slate-800/50 border border-slate-700">
-              <TabsTrigger value="general" className="flex items-center space-x-2 data-[state=active]:bg-slate-700">
+              <TabsTrigger value="general" className="flex items-center space-x-2 data-[state=active]:bg-slate-700 bg-[#000000]">
                 <User className="w-4 h-4" />
                 <span className="hidden sm:inline">General</span>
               </TabsTrigger>
