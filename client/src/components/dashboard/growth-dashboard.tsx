@@ -198,7 +198,6 @@ export default function GrowthDashboard() {
           </div>
         </div>
       </div>
-
       {/* Analytics Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         {analyticsCards.map((card) => (
@@ -224,13 +223,7 @@ export default function GrowthDashboard() {
                   </div>
                   <Badge 
                     variant="secondary" 
-                    className={`text-xs px-2 py-1 rounded-full ${
-                      card.trend === 'up' 
-                        ? 'bg-green-500/20 text-green-400' 
-                        : card.trend === 'down'
-                        ? 'bg-red-500/20 text-red-400'
-                        : 'bg-slate-500/20 text-slate-400'
-                    }`}
+                    className="inline-flex items-center border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-secondary/80 text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400 ml-[-15px] mr-[-15px]"
                     data-testid={`badge-trend-${card.id}`}
                   >
                     {card.change}
@@ -254,7 +247,6 @@ export default function GrowthDashboard() {
           </Card>
         ))}
       </div>
-
       {/* Growth Summary */}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl p-6">
@@ -293,7 +285,6 @@ export default function GrowthDashboard() {
           </div>
         </Card>
       </div>
-
       {/* AI Performance Notice */}
       <div className="mt-8 p-6 bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl">
         <div className="flex items-start space-x-4">
