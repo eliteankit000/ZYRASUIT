@@ -242,7 +242,7 @@ export async function seedSubscriptionPlans(): Promise<void> {
       },
       {
         planName: "Starter",
-        price: 39,
+        price: 3900,
         features: [
           "Up to 50 products",
           "CSV import/export",
@@ -254,7 +254,7 @@ export async function seedSubscriptionPlans(): Promise<void> {
       },
       {
         planName: "Pro",
-        price: 99,
+        price: 9900,
         features: [
           "Unlimited products",
           "Smart suggestions",
@@ -268,7 +268,7 @@ export async function seedSubscriptionPlans(): Promise<void> {
       },
       {
         planName: "Growth",
-        price: 299,
+        price: 29900,
         features: [
           "Everything in Pro",
           "Multi-language support",
@@ -282,7 +282,7 @@ export async function seedSubscriptionPlans(): Promise<void> {
       },
       {
         planName: "Enterprise",
-        price: 999,
+        price: 99900,
         features: [
           "Unlimited everything",
           "Custom AI tuning",
