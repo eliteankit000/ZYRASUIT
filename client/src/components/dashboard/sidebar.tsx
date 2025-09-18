@@ -103,12 +103,12 @@ export default function Sidebar({ activeTab, onTabChange, user, isOpen, onClose 
   });
 
   const navItems = [
-    { id: "overview", label: "Dashboard", icon: <Home className="w-5 h-5" /> },
-    { id: "ai-tools", label: "AI Tools", icon: <Zap className="w-5 h-5" /> },
-    { id: "automate", label: "Automate", icon: <Cog className="w-5 h-5" /> },
-    { id: "campaigns", label: "Campaigns", icon: <Mail className="w-5 h-5" /> },
-    { id: "products", label: "Products", icon: <Package className="w-5 h-5" /> },
-    { id: "settings", label: "Settings", icon: <Settings className="w-5 h-5" /> },
+    { id: "overview", label: "Dashboard", icon: <Home className="w-4 h-4 sm:w-5 sm:h-5" /> },
+    { id: "ai-tools", label: "AI Tools", icon: <Zap className="w-4 h-4 sm:w-5 sm:h-5" /> },
+    { id: "automate", label: "Automate", icon: <Cog className="w-4 h-4 sm:w-5 sm:h-5" /> },
+    { id: "campaigns", label: "Campaigns", icon: <Mail className="w-4 h-4 sm:w-5 sm:h-5" /> },
+    { id: "products", label: "Products", icon: <Package className="w-4 h-4 sm:w-5 sm:h-5" /> },
+    { id: "settings", label: "Settings", icon: <Settings className="w-4 h-4 sm:w-5 sm:h-5" /> },
   ];
 
   return (
@@ -125,7 +125,7 @@ export default function Sidebar({ activeTab, onTabChange, user, isOpen, onClose 
       <div
         ref={sidebarRef}
         className={cn(
-          "fixed left-0 top-0 w-64 h-full sidebar-gradient border-r border-border z-40 transition-transform duration-300 ease-in-out",
+          "fixed left-0 top-0 w-64 h-full sidebar-gradient border-r border-border z-40 transition-transform duration-300 ease-in-out lg:top-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -148,7 +148,7 @@ export default function Sidebar({ activeTab, onTabChange, user, isOpen, onClose 
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
               <Zap className="w-6 h-6 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold text-foreground">Zyra</span>
+            <span className="text-xl sm:text-2xl font-bold text-foreground">Zyra</span>
           </div>
 
           {/* Navigation */}
@@ -179,7 +179,7 @@ export default function Sidebar({ activeTab, onTabChange, user, isOpen, onClose 
               <User className="w-5 h-5 text-primary-foreground" />
             </div>
             <div className="flex-1">
-              <div className="text-sm font-medium pl-[0px] pr-[0px] ml-[-2px] mr-[-2px] pt-[-12px] pb-[-12px] mt-[-4px] mb-[-4px]" data-testid="text-user-name">{user?.fullName || "User"}</div>
+              <div className="text-xs sm:text-sm font-medium pl-[0px] pr-[0px] ml-[-2px] mr-[-2px] pt-[-12px] pb-[-12px] mt-[-4px] mb-[-4px]" data-testid="text-user-name">{user?.fullName || "User"}</div>
               <div className="text-xs text-muted-foreground" data-testid="text-user-plan">{user?.plan || "Free"} Plan</div>
             </div>
             <Button

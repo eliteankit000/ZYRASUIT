@@ -36,7 +36,7 @@ export default function GrowthDashboard() {
       id: 'optimized-products',
       title: 'Optimized Products',
       description: 'Products enhanced by Zyra AI with improved descriptions and SEO',
-      icon: <ShoppingBag className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '247',
       change: '+23 this week',
       trend: 'up',
@@ -47,7 +47,7 @@ export default function GrowthDashboard() {
       id: 'email-performance',
       title: 'Email Performance',
       description: 'Email open rates and click-through performance analytics',
-      icon: <Mail className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <Mail className="w-4 h-4 sm:w-5 sm:h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '34.2%',
       change: '+5.7% CTR',
       trend: 'up',
@@ -58,7 +58,7 @@ export default function GrowthDashboard() {
       id: 'sms-conversion',
       title: 'SMS Conversion',
       description: 'SMS recovery campaigns and sales conversion tracking',
-      icon: <MessageSquare className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '28.9%',
       change: '+12.3% conversion',
       trend: 'up',
@@ -69,7 +69,7 @@ export default function GrowthDashboard() {
       id: 'seo-keyword-density',
       title: 'SEO Keyword Density',
       description: 'Keyword optimization and search ranking improvements',
-      icon: <Search className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <Search className="w-4 h-4 sm:w-5 sm:h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '92%',
       change: '+15% this month',
       trend: 'up',
@@ -80,7 +80,7 @@ export default function GrowthDashboard() {
       id: 'content-roi',
       title: 'Content ROI Tracking',
       description: 'AI-generated content performance and sales impact measurement',
-      icon: <TrendingUp className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '145%',
       change: '+34% ROI increase',
       trend: 'up',
@@ -91,7 +91,7 @@ export default function GrowthDashboard() {
       id: 'revenue-impact',
       title: 'Revenue Impact',
       description: 'Total revenue boost from Zyra AI optimizations this month',
-      icon: <DollarSign className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '$12,847',
       change: '+$3,200 this month',
       trend: 'up',
@@ -102,7 +102,7 @@ export default function GrowthDashboard() {
       id: 'seo-ranking-tracker',
       title: 'SEO Ranking Tracker',
       description: 'Track keyword positions and search visibility over time',
-      icon: <BarChart3 className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: 'Rank #3',
       change: '+7 positions',
       trend: 'up',
@@ -113,7 +113,7 @@ export default function GrowthDashboard() {
       id: 'ab-test-results',
       title: 'A/B Test Results',
       description: 'Performance comparison of different content versions and optimization tests',
-      icon: <Zap className="w-5 h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
+      icon: <Zap className="w-4 h-4 sm:w-5 sm:h-5 stroke-2" style={{ color: '#C1E8FF' }} />,
       value: '67%',
       change: '+23% win rate',
       trend: 'up',
@@ -184,15 +184,15 @@ export default function GrowthDashboard() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="space-y-3 mb-8">
+      <div className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
         <div className="flex items-center space-x-3">
           <div>
-            <h1 className="text-4xl font-bold text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">
               Growth Analytics Dashboard
             </h1>
-            <p className="text-slate-300 text-lg">
+            <p className="text-slate-300 text-sm sm:text-base lg:text-lg">
               Track your store's performance, optimization impact, and revenue growth powered by Zyra AI
             </p>
           </div>
@@ -200,7 +200,7 @@ export default function GrowthDashboard() {
       </div>
 
       {/* Analytics Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         {analyticsCards.map((card) => (
           <Card 
             key={card.id} 
@@ -214,12 +214,12 @@ export default function GrowthDashboard() {
                   <div className="flex items-center justify-center w-8 h-8 transition-all duration-300">
                     {card.icon}
                   </div>
-                  <CardTitle className="text-white font-bold text-lg flex items-center" data-testid={`text-title-${card.id}`}>
+                  <CardTitle className="text-white font-bold text-sm sm:text-base lg:text-lg flex items-center" data-testid={`text-title-${card.id}`}>
                     {card.title}
                   </CardTitle>
                 </div>
                 <div className="text-right flex flex-col items-end gap-1">
-                  <div className="text-2xl font-bold text-white" data-testid={`text-value-${card.id}`}>
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white" data-testid={`text-value-${card.id}`}>
                     {card.value}
                   </div>
                   <Badge 
@@ -237,7 +237,7 @@ export default function GrowthDashboard() {
                   </Badge>
                 </div>
               </div>
-              <CardDescription className="text-slate-300 leading-relaxed ml-11" data-testid={`text-description-${card.id}`}>
+              <CardDescription className="text-slate-300 text-xs sm:text-sm leading-relaxed ml-7 sm:ml-11" data-testid={`text-description-${card.id}`}>
                 {card.description}
               </CardDescription>
             </CardHeader>

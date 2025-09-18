@@ -35,7 +35,7 @@ export default function AutomationTools() {
       id: 'csv-import-export',
       title: 'CSV Import/Export',
       description: 'Upload or download CSV files for bulk product management and data synchronization',
-      icon: <FileSpreadsheet className="w-8 h-8" style={{ color: '#C1E8FF' }} />,
+      icon: <FileSpreadsheet className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" style={{ color: '#C1E8FF' }} />,
       category: 'existing',
       actionText: 'Upload CSV / Export CSV',
       comingSoon: false,
@@ -45,7 +45,7 @@ export default function AutomationTools() {
       id: 'shopify-publish',
       title: 'One-Click Shopify Publish',
       description: 'Push optimized product copy directly to your Shopify store listings instantly',
-      icon: <Share className="w-8 h-8" style={{ color: '#C1E8FF' }} />,
+      icon: <Share className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" style={{ color: '#C1E8FF' }} />,
       category: 'existing', 
       actionText: 'Publish to Shopify',
       comingSoon: false,
@@ -55,7 +55,7 @@ export default function AutomationTools() {
       id: 'bulk-suggestions',
       title: 'Smart Bulk Suggestions',
       description: 'AI scans products with low CTR/SEO performance and auto-suggests improvements',
-      icon: <Brain className="w-8 h-8" style={{ color: '#C1E8FF' }} />,
+      icon: <Brain className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" style={{ color: '#C1E8FF' }} />,
       category: 'new',
       actionText: 'Run Suggestions',
       comingSoon: true,
@@ -65,7 +65,7 @@ export default function AutomationTools() {
       id: 'rollback-changes',
       title: 'Rollback Button',
       description: 'Instantly undo recent changes to restore previous versions and ensure data safety',
-      icon: <RotateCcw className="w-8 h-8" style={{ color: '#C1E8FF' }} />,
+      icon: <RotateCcw className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" style={{ color: '#C1E8FF' }} />,
       category: 'new',
       actionText: 'Rollback Changes',
       comingSoon: true,
@@ -150,14 +150,14 @@ export default function AutomationTools() {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Automation Tools</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">Automation Tools</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Streamline your workflow with powerful automation features for bulk operations and intelligent optimizations.
         </p>
       </div>
 
       {/* Automation Tools Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         {automationTools.map((tool) => (
           <Card 
             key={tool.id} 
@@ -168,7 +168,7 @@ export default function AutomationTools() {
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
                   {tool.icon}
-                  <CardTitle className="text-white font-semibold text-lg" data-testid={`text-title-${tool.id}`}>
+                  <CardTitle className="text-white font-semibold text-sm sm:text-base lg:text-lg" data-testid={`text-title-${tool.id}`}>
                     {tool.title}
                   </CardTitle>
                 </div>

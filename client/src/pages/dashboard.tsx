@@ -243,7 +243,7 @@ export default function Dashboard() {
         sidebarOpen ? 'lg:ml-64' : 'ml-0'
       }`}>
         {/* Top Bar */}
-        <header className="relative bg-gradient-to-br from-[#021024] to-[#052659] backdrop-blur-sm border-b border-border px-4 sm:px-6 py-3 sm:py-4">
+        <header className="bg-gradient-to-br from-[#021024] to-[#052659] backdrop-blur-sm border-b border-border px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center">
             {/* Left Section - Hamburger + Title */}
             <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
@@ -257,8 +257,8 @@ export default function Dashboard() {
                 <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
               <div className="min-w-0 flex-1">
-                <h1 className="font-bold text-white text-lg sm:text-xl truncate" data-testid="text-page-title">{pageTitle.title}</h1>
-                <p className="text-slate-300 text-xs sm:text-sm truncate" data-testid="text-page-subtitle">{pageTitle.subtitle}</p>
+                <h1 className="font-bold text-white text-base sm:text-lg lg:text-xl xl:text-2xl truncate" data-testid="text-page-title">{pageTitle.title}</h1>
+                <p className="text-slate-300 text-xs sm:text-sm lg:text-base truncate" data-testid="text-page-subtitle">{pageTitle.subtitle}</p>
               </div>
             </div>
 

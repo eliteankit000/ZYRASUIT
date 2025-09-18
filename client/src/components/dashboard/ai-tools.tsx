@@ -111,7 +111,7 @@ export default function AITools() {
       id: 'product-descriptions',
       title: 'Smart Product Descriptions',
       description: 'AI generates compelling descriptions in 3 styles: Sales, SEO, and Casual',
-      icon: <FileText className="w-8 h-8" />,
+      icon: <FileText className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" />,
       category: 'existing',
       gradient: 'from-blue-500 to-cyan-400',
       actionText: 'Generate Descriptions',
@@ -121,7 +121,7 @@ export default function AITools() {
       id: 'bulk-optimization',
       title: 'Bulk Optimization',
       description: 'Optimize 20-100+ products in one go with AI-powered enhancements',
-      icon: <Package className="w-8 h-8" />,
+      icon: <Package className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" />,
       category: 'existing', 
       gradient: 'from-green-500 to-emerald-400',
       actionText: 'Start Bulk Process',
@@ -131,7 +131,7 @@ export default function AITools() {
       id: 'seo-titles',
       title: 'SEO Titles & Meta Tags',
       description: 'Keyword-rich, AI-crafted titles and meta descriptions for better search rankings',
-      icon: <Search className="w-8 h-8" />,
+      icon: <Search className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" />,
       category: 'existing',
       gradient: 'from-purple-500 to-violet-400', 
       actionText: 'Generate SEO',
@@ -141,7 +141,7 @@ export default function AITools() {
       id: 'image-alt-text',
       title: 'AI Image Alt-Text',
       description: 'Auto-generate alt-text for accessibility and SEO optimization',
-      icon: <ImageIcon className="w-8 h-8" />,
+      icon: <ImageIcon className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" />,
       category: 'existing',
       gradient: 'from-orange-500 to-yellow-400',
       actionText: 'Process Images',
@@ -151,7 +151,7 @@ export default function AITools() {
       id: 'dynamic-templates',
       title: 'Dynamic Templates',
       description: 'Pre-built tones: Luxury, Gen Z, Eco, Minimalist, and more',
-      icon: <Palette className="w-8 h-8" />,
+      icon: <Palette className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" />,
       category: 'new',
       gradient: 'from-pink-500 to-rose-400',
       actionText: 'Choose Template',
@@ -161,7 +161,7 @@ export default function AITools() {
       id: 'brand-voice',
       title: 'Brand Voice Memory',
       description: 'Set your brand tone once, Zyra applies it everywhere automatically',
-      icon: <Brain className="w-8 h-8" />,
+      icon: <Brain className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" />,
       category: 'new',
       gradient: 'from-indigo-500 to-blue-400',
       actionText: 'Setup Voice',
@@ -171,7 +171,7 @@ export default function AITools() {
       id: 'multimodal-ai',
       title: 'Multimodal AI',
       description: 'Upload product images + tags for richer, more accurate copy generation',
-      icon: <Camera className="w-8 h-8" />,
+      icon: <Camera className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" />,
       category: 'new',
       gradient: 'from-teal-500 to-cyan-400',
       actionText: 'Upload & Generate',
@@ -267,7 +267,7 @@ export default function AITools() {
       </div>
 
       {/* Tools Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         {aiTools.map((tool) => (
           <Card 
             key={tool.id} 
