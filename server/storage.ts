@@ -96,6 +96,12 @@ export interface IStorage {
   createActivityLog(userId: string, logData: any): Promise<any>;
   updateUsageStats(userId: string, statField: string, increment: number): Promise<void>;
   generateSampleMetrics(userId: string): Promise<void>;
+
+  // Billing methods
+  getUserSubscription(userId: string): Promise<any>;
+  getUserUsageStats(userId: string): Promise<any>;
+  getUserInvoices(userId: string): Promise<any[]>;
+  getUserPaymentMethods(userId: string): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -868,6 +874,77 @@ export class MemStorage implements IStorage {
     for (const notification of userNotifications) {
       this.notificationsData.delete(notification.id);
     }
+  }
+
+  // Billing methods implementation
+  async getUserSubscription(userId: string): Promise<any> {
+    // Return mock subscription data for demo purposes
+    return {
+      id: `sub_${userId}`,
+      planId: "plan_free",
+      status: "active",
+      currentPeriodStart: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+      currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      cancelAtPeriodEnd: false
+    };
+  }
+
+  async getUserUsageStats(userId: string): Promise<any> {
+    // Return mock usage stats for demo purposes
+    return {
+      productsCount: 3,
+      emailsSent: 15,
+      emailsRemaining: 485,
+      smsSent: 5,
+      smsRemaining: 195,
+      aiGenerationsUsed: 25,
+      seoOptimizationsUsed: 8
+    };
+  }
+
+  async getUserInvoices(userId: string): Promise<any[]> {
+    // Return mock invoice data for demo purposes
+    const mockInvoices = [
+      {
+        id: `inv_${userId}_1`,
+        amount: 39.00,
+        currency: "USD",
+        status: "paid",
+        invoiceNumber: "INV-2024-001",
+        invoiceUrl: "#",
+        pdfUrl: "#",
+        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        paidAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: `inv_${userId}_2`,
+        amount: 39.00,
+        currency: "USD",
+        status: "paid",
+        invoiceNumber: "INV-2024-002",
+        invoiceUrl: "#",
+        pdfUrl: "#",
+        createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+        paidAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString()
+      }
+    ];
+    return mockInvoices;
+  }
+
+  async getUserPaymentMethods(userId: string): Promise<any[]> {
+    // Return mock payment method data for demo purposes
+    const mockPaymentMethods = [
+      {
+        id: `pm_${userId}_1`,
+        type: "card",
+        cardBrand: "visa",
+        cardLast4: "4242",
+        cardExpMonth: 12,
+        cardExpYear: 2025,
+        isDefault: true
+      }
+    ];
+    return mockPaymentMethods;
   }
 }
 

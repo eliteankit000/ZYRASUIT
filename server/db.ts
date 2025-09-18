@@ -225,28 +225,17 @@ export async function seedSubscriptionPlans(): Promise<void> {
       {
         planName: "Forever Free",
         price: 0,
-        description: "Perfect for getting started with basic features",
         features: [
           "Up to 5 products",
           "1 email per month",
           "1 SMS per month", 
           "Basic analytics",
           "Community support"
-        ],
-        limits: {
-          products: 5,
-          emails: 1,
-          sms: 1,
-          aiGenerations: 10,
-          seoOptimizations: 5
-        },
-        currency: "USD",
-        interval: "month"
+        ]
       },
       {
         planName: "Starter",
         price: 39,
-        description: "Great for small businesses ready to scale",
         features: [
           "Up to 50 products",
           "CSV import/export",
@@ -254,21 +243,11 @@ export async function seedSubscriptionPlans(): Promise<void> {
           "500 emails per month",
           "200 SMS per month",
           "Advanced analytics"
-        ],
-        limits: {
-          products: 50,
-          emails: 500,
-          sms: 200,
-          aiGenerations: 1000,
-          seoOptimizations: 100
-        },
-        currency: "USD",
-        interval: "month"
+        ]
       },
       {
         planName: "Pro",
         price: 99,
-        description: "For growing businesses with unlimited potential",
         features: [
           "Unlimited products",
           "Smart suggestions",
@@ -278,21 +257,11 @@ export async function seedSubscriptionPlans(): Promise<void> {
           "Email segmentation",
           "SEO tracker",
           "A/B testing"
-        ],
-        limits: {
-          products: -1, // unlimited
-          emails: 5000,
-          sms: 1000,
-          aiGenerations: -1,
-          seoOptimizations: -1
-        },
-        currency: "USD",
-        interval: "month"
+        ]
       },
       {
         planName: "Growth",
         price: 299,
-        description: "Everything in Pro plus advanced growth tools",
         features: [
           "Everything in Pro",
           "Multi-language support",
@@ -302,21 +271,11 @@ export async function seedSubscriptionPlans(): Promise<void> {
           "5,000 SMS per month",
           "Revenue dashboard",
           "White-label options"
-        ],
-        limits: {
-          products: -1,
-          emails: 25000,
-          sms: 5000,
-          aiGenerations: -1,
-          seoOptimizations: -1
-        },
-        currency: "USD",
-        interval: "month"
+        ]
       },
       {
         planName: "Enterprise",
         price: 999,
-        description: "Custom solutions for enterprise needs",
         features: [
           "Unlimited everything",
           "Custom AI tuning",
@@ -325,16 +284,7 @@ export async function seedSubscriptionPlans(): Promise<void> {
           "Dedicated support manager",
           "Custom integrations",
           "Advanced reporting"
-        ],
-        limits: {
-          products: -1,
-          emails: -1,
-          sms: -1,
-          aiGenerations: -1,
-          seoOptimizations: -1
-        },
-        currency: "USD",
-        interval: "month"
+        ]
       },
     ];
 

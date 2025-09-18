@@ -8,6 +8,7 @@ import Auth from "@/pages/auth";
 import Dashboard from "@/pages/dashboard";
 import Products from "@/pages/products";
 import Profile from "@/pages/profile";
+import Billing from "@/pages/billing";
 import NotFound from "@/pages/not-found";
 import { useAuth } from "@/lib/auth";
 
@@ -29,6 +30,7 @@ function Router() {
       <Route path="/dashboard" component={user ? Dashboard : () => { window.location.href = "/auth/login"; return null; }} />
       <Route path="/products" component={user ? Products : () => { window.location.href = "/auth/login"; return null; }} />
       <Route path="/profile" component={user ? Profile : () => { window.location.href = "/auth/login"; return null; }} />
+      <Route path="/billing" component={user ? Billing : () => { window.location.href = "/auth/login"; return null; }} />
       <Route component={NotFound} />
     </Switch>
   );

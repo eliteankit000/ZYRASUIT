@@ -162,9 +162,14 @@ export default function Settings() {
   });
 
   const handleSettingsAction = (cardId: string) => {
-    // Handle profile-account specifically by navigating to profile page
+    // Handle specific navigation pages
     if (cardId === 'profile-account') {
       setLocation('/profile');
+      return;
+    }
+    
+    if (cardId === 'subscription-billing') {
+      setLocation('/billing');
       return;
     }
     

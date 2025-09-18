@@ -678,6 +678,109 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get current user subscription
+  app.get("/api/subscription/current", requireAuth, async (req, res) => {
+    try {
+      const subscription = await storage.getUserSubscription(req.user!.id);
+      res.json(subscription || {});
+    } catch (error: any) {
+      console.error("Error fetching user subscription:", error);
+      res.status(500).json({ 
+        error: "Failed to fetch subscription",
+        message: error.message 
+      });
+    }
+  });
+
+  // Get usage stats
+  app.get("/api/usage-stats", requireAuth, async (req, res) => {
+    try {
+      const usageStats = await storage.getUserUsageStats(req.user!.id);
+      res.json(usageStats || {
+        productsCount: 0,
+        emailsSent: 0,
+        emailsRemaining: 0,
+        smsSent: 0,
+        smsRemaining: 0,
+        aiGenerationsUsed: 0,
+        seoOptimizationsUsed: 0
+      });
+    } catch (error: any) {
+      console.error("Error fetching usage stats:", error);
+      res.status(500).json({ 
+        error: "Failed to fetch usage stats",
+        message: error.message 
+      });
+    }
+  });
+
+  // Get invoices
+  app.get("/api/invoices", requireAuth, async (req, res) => {
+    try {
+      const invoices = await storage.getUserInvoices(req.user!.id);
+      res.json(invoices || []);
+    } catch (error: any) {
+      console.error("Error fetching invoices:", error);
+      res.status(500).json({ 
+        error: "Failed to fetch invoices",
+        message: error.message 
+      });
+    }
+  });
+
+  // Get payment methods
+  app.get("/api/payment-methods", requireAuth, async (req, res) => {
+    try {
+      const paymentMethods = await storage.getUserPaymentMethods(req.user!.id);
+      res.json(paymentMethods || []);
+    } catch (error: any) {
+      console.error("Error fetching payment methods:", error);
+      res.status(500).json({ 
+        error: "Failed to fetch payment methods",
+        message: error.message 
+      });
+    }
+  });
+
+  // Add payment method
+  app.post("/api/payment-methods/add", requireAuth, async (req, res) => {
+    try {
+      if (!stripe) {
+        return res.status(500).json({ error: "Stripe not configured" });
+      }
+
+      const user = req.user!;
+      let customerId = user.stripeCustomerId;
+
+      // Create Stripe customer if doesn't exist
+      if (!customerId) {
+        const customer = await stripe.customers.create({
+          email: user.email,
+          name: user.fullName,
+          metadata: { userId: user.id }
+        });
+        customerId = customer.id;
+        await storage.updateUserStripeInfo(user.id, customerId, "");
+      }
+
+      // Create setup session
+      const session = await stripe.checkout.sessions.create({
+        mode: 'setup',
+        customer: customerId,
+        success_url: `${req.protocol}://${req.get('host')}/billing?setup=success`,
+        cancel_url: `${req.protocol}://${req.get('host')}/billing?setup=cancel`,
+      });
+
+      res.json({ setupUrl: session.url });
+    } catch (error: any) {
+      console.error("Error adding payment method:", error);
+      res.status(500).json({ 
+        error: "Failed to add payment method",
+        message: error.message 
+      });
+    }
+  });
+
   app.post("/api/update-subscription", requireAuth, async (req, res) => {
     try {
       const { planId } = req.body;
@@ -690,6 +793,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Update subscription error:", error);
       res.status(500).json({ message: error.message || "Failed to update subscription" });
+    }
+  });
+
+  // Change subscription plan (alternative endpoint for billing page)
+  app.post("/api/subscription/change-plan", requireAuth, async (req, res) => {
+    try {
+      const { planId } = req.body;
+      if (!planId) {
+        return res.status(400).json({ error: "Plan ID is required" });
+      }
+
+      const user = await updateUserSubscription(req.user!.id, planId);
+      res.json({ user });
+    } catch (error: any) {
+      console.error("Error changing subscription plan:", error);
+      res.status(500).json({ 
+        error: "Failed to change subscription plan",
+        message: error.message 
+      });
     }
   });
 
