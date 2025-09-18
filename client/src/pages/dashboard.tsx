@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DashboardContentSkeleton } from "@/components/ui/skeleton";
 import Sidebar from "@/components/dashboard/sidebar";
 import AITools from "@/components/dashboard/ai-tools";
@@ -10,22 +12,28 @@ import Campaigns from "@/components/dashboard/campaigns";
 import GrowthDashboard from "@/components/dashboard/growth-dashboard";
 import Settings from "@/components/dashboard/settings";
 import Profile from "@/components/dashboard/profile";
-
+import NotificationCenter from "@/components/dashboard/notification-center";
 import { useAuth } from "@/lib/auth";
 import { useDashboard, useSkeletonLoader, useConnectionStatus } from "@/hooks/useDashboard";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Zap, TrendingUp, ShoppingCart, Eye, RotateCcw, Plus, Menu, Wifi, WifiOff } from "lucide-react";
+import { Zap, TrendingUp, ShoppingCart, Eye, RotateCcw, Plus, Menu, User, LogOut, Settings as SettingsIcon } from "lucide-react";
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Handle logout
+  const handleLogout = () => {
+    logout();
+    setLocation("/auth");
+  };
 
   
 
@@ -235,25 +243,127 @@ export default function Dashboard() {
         sidebarOpen ? 'lg:ml-64' : 'ml-0'
       }`}>
         {/* Top Bar */}
-        <header className="relative bg-card/50 backdrop-blur-sm border-b border-border px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
+        <header className="relative bg-gradient-to-br from-[#021024] to-[#052659] backdrop-blur-sm border-b border-border px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center">
+            {/* Left Section - Hamburger + Title */}
             <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="hover:bg-muted flex-shrink-0"
+                className="text-slate-200 hover:text-[#C1E8FF] hover:bg-white/10 transition-all duration-300 ease-in-out flex-shrink-0"
                 data-testid="button-toggle-sidebar"
               >
                 <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
               <div className="min-w-0 flex-1">
-                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold truncate" data-testid="text-page-title">{pageTitle.title}</h1>
-                <p className="text-xs sm:text-sm text-muted-foreground truncate" data-testid="text-page-subtitle">{pageTitle.subtitle}</p>
+                <h1 className="font-bold text-white text-lg sm:text-xl truncate" data-testid="text-page-title">{pageTitle.title}</h1>
+                <p className="text-slate-300 text-xs sm:text-sm truncate" data-testid="text-page-subtitle">{pageTitle.subtitle}</p>
               </div>
             </div>
-            
-            
+
+            {/* Center Section - Navigation Shortcuts (Desktop Only) */}
+            <nav className="hidden md:flex items-center space-x-6 flex-1 justify-center">
+              <Button
+                variant="ghost"
+                onClick={() => setActiveTab("ai-tools")}
+                className={`text-slate-200 hover:text-[#C1E8FF] transition-all duration-300 ease-in-out ${
+                  activeTab === "ai-tools" ? "text-[#C1E8FF]" : ""
+                }`}
+                aria-label="Navigate to AI Tools"
+                data-testid="link-nav-ai-tools"
+              >
+                AI Tools
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setActiveTab("automate")}
+                className={`text-slate-200 hover:text-[#C1E8FF] transition-all duration-300 ease-in-out ${
+                  activeTab === "automate" ? "text-[#C1E8FF]" : ""
+                }`}
+                aria-label="Navigate to Automation"
+                data-testid="link-nav-automate"
+              >
+                Automate
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setActiveTab("campaigns")}
+                className={`text-slate-200 hover:text-[#C1E8FF] transition-all duration-300 ease-in-out ${
+                  activeTab === "campaigns" ? "text-[#C1E8FF]" : ""
+                }`}
+                aria-label="Navigate to Campaigns"
+                data-testid="link-nav-campaigns"
+              >
+                Campaigns
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setActiveTab("settings")}
+                className={`text-slate-200 hover:text-[#C1E8FF] transition-all duration-300 ease-in-out ${
+                  activeTab === "settings" ? "text-[#C1E8FF]" : ""
+                }`}
+                aria-label="Navigate to Settings"
+                data-testid="link-nav-settings"
+              >
+                Settings
+              </Button>
+            </nav>
+
+            {/* Right Section - Notifications + Profile */}
+            <div className="flex items-center justify-end space-x-2 sm:space-x-4 flex-shrink-0">
+              <NotificationCenter />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="relative h-10 w-10 rounded-full text-slate-200 hover:text-[#C1E8FF] transition-all duration-300 ease-in-out"
+                    data-testid="avatar-menu-trigger"
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="" alt={user?.fullName || "User"} />
+                      <AvatarFallback className="bg-gradient-to-br from-[#C1E8FF] to-[#2563EB] text-[#021024] font-bold text-sm">
+                        {user?.fullName ? user.fullName.charAt(0).toUpperCase() : "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 bg-gradient-to-br from-[#021024] to-[#052659] border-border/50 text-white" align="end" forceMount>
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex flex-col space-y-1 leading-none">
+                      <p className="font-bold text-white text-sm">{user?.fullName || "User"}</p>
+                      <p className="text-xs text-slate-300">{user?.email}</p>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator className="bg-border/30" />
+                  <DropdownMenuItem
+                    className="text-slate-200 hover:text-white hover:bg-white/10 focus:text-white focus:bg-white/10 cursor-pointer"
+                    onClick={() => setActiveTab("profile")}
+                    data-testid="menuitem-profile"
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-slate-200 hover:text-white hover:bg-white/10 focus:text-white focus:bg-white/10 cursor-pointer"
+                    onClick={() => setActiveTab("settings")}
+                    data-testid="menuitem-settings"
+                  >
+                    <SettingsIcon className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-border/30" />
+                  <DropdownMenuItem
+                    className="text-red-300 hover:text-red-200 hover:bg-red-500/20 focus:text-red-200 focus:bg-red-500/20 cursor-pointer"
+                    onClick={handleLogout}
+                    data-testid="menuitem-logout"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </header>
 
