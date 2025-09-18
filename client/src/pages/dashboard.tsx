@@ -266,17 +266,6 @@ export default function Dashboard() {
             <nav className="hidden md:flex items-center space-x-6 flex-1 justify-center">
               <Button
                 variant="ghost"
-                onClick={() => setActiveTab("ai-tools")}
-                className={`text-slate-200 hover:text-[#C1E8FF] transition-all duration-300 ease-in-out ${
-                  activeTab === "ai-tools" ? "text-[#C1E8FF]" : ""
-                }`}
-                aria-label="Navigate to AI Tools"
-                data-testid="link-nav-ai-tools"
-              >
-                AI Tools
-              </Button>
-              <Button
-                variant="ghost"
                 onClick={() => setActiveTab("automate")}
                 className={`text-slate-200 hover:text-[#C1E8FF] transition-all duration-300 ease-in-out ${
                   activeTab === "automate" ? "text-[#C1E8FF]" : ""
