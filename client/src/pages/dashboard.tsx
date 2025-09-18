@@ -10,7 +10,7 @@ import Campaigns from "@/components/dashboard/campaigns";
 import GrowthDashboard from "@/components/dashboard/growth-dashboard";
 import Settings from "@/components/dashboard/settings";
 import Profile from "@/components/dashboard/profile";
-import NotificationCenter from "@/components/dashboard/notification-center";
+
 import { useAuth } from "@/lib/auth";
 import { useDashboard, useSkeletonLoader, useConnectionStatus } from "@/hooks/useDashboard";
 import { useLocation } from "wouter";
@@ -235,7 +235,7 @@ export default function Dashboard() {
         sidebarOpen ? 'lg:ml-64' : 'ml-0'
       }`}>
         {/* Top Bar */}
-        <header className="bg-card/50 backdrop-blur-sm border-b border-border px-4 sm:px-6 py-3 sm:py-4">
+        <header className="relative bg-card/50 backdrop-blur-sm border-b border-border px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
               <Button
@@ -253,10 +253,7 @@ export default function Dashboard() {
               </div>
             </div>
             
-            {/* Right Side - Notification Center */}
-            <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
-              <NotificationCenter />
-            </div>
+            
           </div>
         </header>
 
