@@ -13,6 +13,8 @@ export const users = pgTable("users", {
   trialEndDate: timestamp("trial_end_date").default(sql`NOW() + INTERVAL '7 days'`),
   stripeCustomerId: text("stripe_customer_id"),
   stripeSubscriptionId: text("stripe_subscription_id"),
+  imageUrl: text("image_url"),
+  preferredLanguage: text("preferred_language").default("en"),
   createdAt: timestamp("created_at").default(sql`NOW()`),
 });
 
@@ -166,6 +168,20 @@ export const notifications = pgTable("notifications", {
   readAt: timestamp("read_at"),
 });
 
+export const storeConnections = pgTable("store_connections", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  platform: text("platform").notNull(), // 'shopify' | 'woocommerce'
+  storeName: text("store_name").notNull(),
+  storeUrl: text("store_url"),
+  accessToken: text("access_token").notNull(),
+  refreshToken: text("refresh_token"),
+  status: text("status").notNull().default("active"), // 'active' | 'inactive' | 'error'
+  lastSyncAt: timestamp("last_sync_at"),
+  createdAt: timestamp("created_at").default(sql`NOW()`),
+  updatedAt: timestamp("updated_at").default(sql`NOW()`),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).pick({
   email: true,
@@ -239,6 +255,12 @@ export const insertNotificationSchema = createInsertSchema(notifications).omit({
   readAt: true,
 });
 
+export const insertStoreConnectionSchema = createInsertSchema(storeConnections).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -267,3 +289,5 @@ export type RealtimeMetrics = typeof realtimeMetrics.$inferSelect;
 export type InsertRealtimeMetrics = z.infer<typeof insertRealtimeMetricsSchema>;
 export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
+export type StoreConnection = typeof storeConnections.$inferSelect;
+export type InsertStoreConnection = z.infer<typeof insertStoreConnectionSchema>;
