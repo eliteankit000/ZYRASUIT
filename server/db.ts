@@ -231,18 +231,23 @@ export async function seedSubscriptionPlans(): Promise<void> {
     const defaultPlans: InsertSubscriptionPlan[] = [
       {
         planName: "Forever Free",
-        price: 0,
+        price: "0",
         features: [
           "Up to 5 products",
           "1 email per month",
           "1 SMS per month", 
           "Basic analytics",
           "Community support"
-        ]
+        ],
+        limits: {
+          products: 5,
+          emails: 1,
+          sms: 1
+        }
       },
       {
         planName: "Starter",
-        price: 3900,
+        price: "39.00",
         features: [
           "Up to 50 products",
           "CSV import/export",
@@ -250,11 +255,16 @@ export async function seedSubscriptionPlans(): Promise<void> {
           "500 emails per month",
           "200 SMS per month",
           "Advanced analytics"
-        ]
+        ],
+        limits: {
+          products: 50,
+          emails: 500,
+          sms: 200
+        }
       },
       {
         planName: "Pro",
-        price: 9900,
+        price: "99.00",
         features: [
           "Unlimited products",
           "Smart suggestions",
@@ -264,11 +274,16 @@ export async function seedSubscriptionPlans(): Promise<void> {
           "Email segmentation",
           "SEO tracker",
           "A/B testing"
-        ]
+        ],
+        limits: {
+          products: -1,
+          emails: 5000,
+          sms: 1000
+        }
       },
       {
         planName: "Growth",
-        price: 29900,
+        price: "299.00",
         features: [
           "Everything in Pro",
           "Multi-language support",
@@ -278,11 +293,16 @@ export async function seedSubscriptionPlans(): Promise<void> {
           "5,000 SMS per month",
           "Revenue dashboard",
           "White-label options"
-        ]
+        ],
+        limits: {
+          products: -1,
+          emails: 25000,
+          sms: 5000
+        }
       },
       {
         planName: "Enterprise",
-        price: 99900,
+        price: "999.00",
         features: [
           "Unlimited everything",
           "Custom AI tuning",
@@ -291,7 +311,12 @@ export async function seedSubscriptionPlans(): Promise<void> {
           "Dedicated support manager",
           "Custom integrations",
           "Advanced reporting"
-        ]
+        ],
+        limits: {
+          products: -1,
+          emails: -1,
+          sms: -1
+        }
       },
     ];
 
@@ -313,7 +338,9 @@ export async function seedSubscriptionPlans(): Promise<void> {
         await db.insert(subscriptionPlans).values({
           planName: planData.planName,
           price: planData.price,
-          features: planData.features
+          features: planData.features,
+          limits: {},
+          interval: "month"
         });
         console.log(`[DB] Created subscription plan: ${planData.planName}`);
       } else {
@@ -486,7 +513,7 @@ export async function getUserDashboardData(userId: string): Promise<{
     console.log(`[DB] Dashboard data fetched for user ${userId}`);
     return {
       user,
-      profile,
+      profile: profile || null,
       usageStats: stats,
       activityLogs: activities,
       toolsAccess: tools,
