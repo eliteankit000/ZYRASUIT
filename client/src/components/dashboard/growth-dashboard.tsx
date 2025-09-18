@@ -223,7 +223,7 @@ export default function GrowthDashboard() {
                   </div>
                   <Badge 
                     variant="secondary" 
-                    className="inline-flex items-center border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-secondary/80 text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400 ml-[-15px] mr-[-15px]"
+                    className="inline-flex items-center border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-secondary/80 text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400 pt-[0px] pb-[0px] pl-[5px] pr-[5px] ml-[-6px] mr-[-6px]"
                     data-testid={`badge-trend-${card.id}`}
                   >
                     {card.change}
