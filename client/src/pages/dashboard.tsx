@@ -266,17 +266,6 @@ export default function Dashboard() {
             <nav className="hidden md:flex items-center space-x-6 flex-1 justify-center">
               <Button
                 variant="ghost"
-                onClick={() => setActiveTab("campaigns")}
-                className={`text-slate-200 hover:text-[#C1E8FF] transition-all duration-300 ease-in-out ${
-                  activeTab === "campaigns" ? "text-[#C1E8FF]" : ""
-                }`}
-                aria-label="Navigate to Campaigns"
-                data-testid="link-nav-campaigns"
-              >
-                Campaigns
-              </Button>
-              <Button
-                variant="ghost"
                 onClick={() => setActiveTab("settings")}
                 className={`text-slate-200 hover:text-[#C1E8FF] transition-all duration-300 ease-in-out ${
                   activeTab === "settings" ? "text-[#C1E8FF]" : ""
