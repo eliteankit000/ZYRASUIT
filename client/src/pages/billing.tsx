@@ -377,11 +377,7 @@ export default function BillingPage() {
                         <Button
                           onClick={() => changePlanMutation.mutate(plan.id)}
                           disabled={changePlanMutation.isPending}
-                          className={`w-full font-medium transition-all duration-300 hover:scale-105 ${
-                            isUpgrade 
-                              ? 'bg-green-600 hover:bg-green-700' 
-                              : 'bg-[#C1E8FF] hover:bg-[#C1E8FF] text-indigo-900'
-                          }`}
+                          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 px-4 py-2 w-full font-medium transition-all duration-300 hover:scale-105 hover:bg-green-700 text-[#000000] bg-[#b5e1fe]"
                           data-testid={`button-change-plan-${plan.planName.toLowerCase().replace(' ', '-')}`}
                         >
                           {isUpgrade && <ArrowUp className="w-4 h-4 mr-2" />}
