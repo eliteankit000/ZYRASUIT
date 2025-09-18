@@ -217,7 +217,18 @@ export default function GrowthDashboard() {
                     {card.title}
                   </CardTitle>
                 </div>
-                
+                <div className="text-right flex flex-col items-end gap-2">
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white leading-tight" data-testid={`text-value-${card.id}`}>
+                    {card.value}
+                  </div>
+                  <Badge 
+                    variant="secondary" 
+                    className="inline-flex items-center justify-center whitespace-nowrap leading-none rounded-full px-3 py-1 text-xs font-semibold bg-green-500/20 text-green-400 border border-transparent min-w-[80px]"
+                    data-testid={`badge-trend-${card.id}`}
+                  >
+                    {card.change}
+                  </Badge>
+                </div>
               </div>
               <CardDescription className="text-slate-300 text-xs sm:text-sm leading-relaxed ml-7 sm:ml-11 min-h-[40px]" data-testid={`text-description-${card.id}`}>
                 {card.description}
