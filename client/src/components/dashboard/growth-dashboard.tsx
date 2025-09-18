@@ -199,7 +199,7 @@ export default function GrowthDashboard() {
         </div>
       </div>
       {/* Analytics Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {analyticsCards.map((card) => (
           <Card 
             key={card.id} 
@@ -248,7 +248,7 @@ export default function GrowthDashboard() {
         ))}
       </div>
       {/* Growth Summary */}
-      <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card className="bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl p-6">
           <div className="flex items-center space-x-4">
             <div className="p-3 rounded-full bg-slate-800/50 transition-all duration-300">
