@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useLocation } from "wouter";
 import { 
   Settings as SettingsIcon,
   User,
@@ -44,6 +45,7 @@ interface SettingsCard {
 
 export default function Settings() {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const settingsCards: SettingsCard[] = [
     {
@@ -160,6 +162,12 @@ export default function Settings() {
   });
 
   const handleSettingsAction = (cardId: string) => {
+    // Handle profile-account specifically by navigating to profile page
+    if (cardId === 'profile-account') {
+      setLocation('/profile');
+      return;
+    }
+    
     const card = settingsCards.find(c => c.id === cardId);
     if (!card) return;
 

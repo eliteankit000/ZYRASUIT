@@ -14,12 +14,15 @@ import {
   type InsertAnalytics,
   type Notification,
   type InsertNotification,
+  type StoreConnection,
+  type InsertStoreConnection,
   users, 
   products, 
   seoMeta, 
   campaigns, 
   analytics,
-  notifications
+  notifications,
+  storeConnections
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
@@ -38,6 +41,16 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUser(userId: string, updates: Partial<User>): Promise<User>;
   updateUserStripeInfo(userId: string, customerId: string, subscriptionId: string): Promise<User>;
+  updateUserProfile(userId: string, fullName: string, email: string): Promise<User>;
+  updateUserImage(userId: string, imageUrl: string): Promise<User>;
+  changeUserPassword(userId: string, currentPassword: string, newPassword: string): Promise<User>;
+  updateUserLanguage(userId: string, language: string): Promise<User>;
+
+  // Store connections methods
+  getStoreConnections(userId: string): Promise<StoreConnection[]>;
+  createStoreConnection(storeConnection: InsertStoreConnection): Promise<StoreConnection>;
+  updateStoreConnection(id: string, updates: Partial<StoreConnection>): Promise<StoreConnection>;
+  deleteStoreConnection(id: string): Promise<void>;
 
   // Product methods
   getProducts(userId: string): Promise<Product[]>;
@@ -118,6 +131,93 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId))
       .returning();
     return result[0];
+  }
+
+  async updateUser(userId: string, updates: Partial<User>): Promise<User> {
+    if (!db) throw new Error("Database not configured");
+    const result = await db.update(users)
+      .set(updates)
+      .where(eq(users.id, userId))
+      .returning();
+    return result[0];
+  }
+
+  async updateUserProfile(userId: string, fullName: string, email: string): Promise<User> {
+    if (!db) throw new Error("Database not configured");
+    const result = await db.update(users)
+      .set({ fullName, email })
+      .where(eq(users.id, userId))
+      .returning();
+    return result[0];
+  }
+
+  async updateUserImage(userId: string, imageUrl: string): Promise<User> {
+    if (!db) throw new Error("Database not configured");
+    const result = await db.update(users)
+      .set({ imageUrl })
+      .where(eq(users.id, userId))
+      .returning();
+    return result[0];
+  }
+
+  async changeUserPassword(userId: string, currentPassword: string, newPassword: string): Promise<User> {
+    if (!db) throw new Error("Database not configured");
+    
+    // First, get the user to verify current password
+    const user = await this.getUser(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Verify current password
+    const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+    if (!isValidPassword) {
+      throw new Error("Current password is incorrect");
+    }
+
+    // Hash new password and update
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    const result = await db.update(users)
+      .set({ password: hashedNewPassword })
+      .where(eq(users.id, userId))
+      .returning();
+    return result[0];
+  }
+
+  async updateUserLanguage(userId: string, language: string): Promise<User> {
+    if (!db) throw new Error("Database not configured");
+    const result = await db.update(users)
+      .set({ preferredLanguage: language })
+      .where(eq(users.id, userId))
+      .returning();
+    return result[0];
+  }
+
+  async getStoreConnections(userId: string): Promise<StoreConnection[]> {
+    if (!db) throw new Error("Database not configured");
+    return await db.select().from(storeConnections)
+      .where(eq(storeConnections.userId, userId))
+      .orderBy(desc(storeConnections.createdAt));
+  }
+
+  async createStoreConnection(storeConnection: InsertStoreConnection): Promise<StoreConnection> {
+    if (!db) throw new Error("Database not configured");
+    const result = await db.insert(storeConnections).values(storeConnection).returning();
+    return result[0];
+  }
+
+  async updateStoreConnection(id: string, updates: Partial<StoreConnection>): Promise<StoreConnection> {
+    if (!db) throw new Error("Database not configured");
+    const result = await db.update(storeConnections)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(storeConnections.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteStoreConnection(id: string): Promise<void> {
+    if (!db) throw new Error("Database not configured");
+    await db.delete(storeConnections).where(eq(storeConnections.id, id));
   }
 
   async getProducts(userId: string): Promise<Product[]> {
@@ -306,6 +406,8 @@ export class MemStorage implements IStorage {
       trialEndDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       stripeCustomerId: null,
       stripeSubscriptionId: null,
+      imageUrl: null,
+      preferredLanguage: "en",
       createdAt: new Date(),
     };
     this.users.set(id, user);
@@ -326,6 +428,77 @@ export class MemStorage implements IStorage {
     const updatedUser = { ...user, stripeCustomerId: customerId, stripeSubscriptionId: subscriptionId };
     this.users.set(userId, updatedUser);
     return updatedUser;
+  }
+
+  async updateUserProfile(userId: string, fullName: string, email: string): Promise<User> {
+    const user = this.users.get(userId);
+    if (!user) throw new Error("User not found");
+    const updatedUser = { ...user, fullName, email };
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+
+  async updateUserImage(userId: string, imageUrl: string): Promise<User> {
+    const user = this.users.get(userId);
+    if (!user) throw new Error("User not found");
+    const updatedUser = { ...user, imageUrl };
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+
+  async changeUserPassword(userId: string, currentPassword: string, newPassword: string): Promise<User> {
+    const user = this.users.get(userId);
+    if (!user) throw new Error("User not found");
+
+    // Verify current password
+    const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+    if (!isValidPassword) {
+      throw new Error('Current password is incorrect');
+    }
+
+    // Hash new password and update
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    const updatedUser = { ...user, password: hashedNewPassword };
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+
+  async updateUserLanguage(userId: string, language: string): Promise<User> {
+    const user = this.users.get(userId);
+    if (!user) throw new Error("User not found");
+    const updatedUser = { ...user, preferredLanguage: language };
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+
+  private storeConnections: Map<string, StoreConnection> = new Map();
+
+  async getStoreConnections(userId: string): Promise<StoreConnection[]> {
+    return Array.from(this.storeConnections.values()).filter(conn => conn.userId === userId);
+  }
+
+  async createStoreConnection(storeConnection: InsertStoreConnection): Promise<StoreConnection> {
+    const id = randomUUID();
+    const newConnection: StoreConnection = {
+      id,
+      ...storeConnection,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.storeConnections.set(id, newConnection);
+    return newConnection;
+  }
+
+  async updateStoreConnection(id: string, updates: Partial<StoreConnection>): Promise<StoreConnection> {
+    const connection = this.storeConnections.get(id);
+    if (!connection) throw new Error("Store connection not found");
+    const updatedConnection = { ...connection, ...updates, updatedAt: new Date() };
+    this.storeConnections.set(id, updatedConnection);
+    return updatedConnection;
+  }
+
+  async deleteStoreConnection(id: string): Promise<void> {
+    this.storeConnections.delete(id);
   }
 
   async getProducts(userId: string): Promise<Product[]> {

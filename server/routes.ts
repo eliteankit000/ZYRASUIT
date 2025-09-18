@@ -924,6 +924,147 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Profile management routes
+  app.put('/api/profile', requireAuth, async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { fullName, email } = req.body;
+      if (!fullName || !email) {
+        return res.status(400).json({ error: 'Full name and email are required' });
+      }
+
+      const updatedUser = await storage.updateUserProfile(userId, fullName, email);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error('Update profile error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.put('/api/change-password', requireAuth, async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { currentPassword, newPassword } = req.body;
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ error: 'Current password and new password are required' });
+      }
+
+      await storage.changeUserPassword(userId, currentPassword, newPassword);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Change password error:', error);
+      if (error.message === 'Current password is incorrect') {
+        return res.status(400).json({ error: 'Current password is incorrect' });
+      }
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.put('/api/language', requireAuth, async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { preferredLanguage } = req.body;
+      if (!preferredLanguage) {
+        return res.status(400).json({ error: 'Preferred language is required' });
+      }
+
+      const updatedUser = await storage.updateUserLanguage(userId, preferredLanguage);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error('Update language error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.post('/api/upload-profile-image', requireAuth, async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      // For now, return a placeholder URL since we need to implement proper file upload
+      // This would be where you handle the actual file upload to object storage
+      const imageUrl = '/placeholder-avatar.png';
+      const updatedUser = await storage.updateUserImage(userId, imageUrl);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error('Upload image error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  // Store connections routes
+  app.get('/api/store-connections', requireAuth, async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const connections = await storage.getStoreConnections(userId);
+      res.json(connections);
+    } catch (error) {
+      console.error('Get store connections error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.post('/api/store-connections', requireAuth, async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { platform, storeName, storeUrl, accessToken } = req.body;
+      if (!platform || !storeName || !storeUrl || !accessToken) {
+        return res.status(400).json({ error: 'All store connection fields are required' });
+      }
+
+      const connection = await storage.createStoreConnection({
+        userId,
+        platform,
+        storeName,
+        storeUrl,
+        accessToken,
+        status: 'active'
+      });
+      res.json(connection);
+    } catch (error) {
+      console.error('Create store connection error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.delete('/api/store-connections/:id', requireAuth, async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { id } = req.params;
+      await storage.deleteStoreConnection(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Delete store connection error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
