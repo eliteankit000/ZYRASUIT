@@ -67,19 +67,32 @@ export const campaigns = pgTable("campaigns", {
 export const subscriptions = pgTable("subscriptions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").references(() => users.id).notNull(),
-  plan: text("plan").notNull(),
-  status: text("status").notNull().default("active"),
+  planId: varchar("plan_id").references(() => subscriptionPlans.id).notNull(),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  status: text("status").notNull().default("active"), // active, canceled, past_due, incomplete, trialing
+  currentPeriodStart: timestamp("current_period_start"),
+  currentPeriodEnd: timestamp("current_period_end"),
+  cancelAtPeriodEnd: boolean("cancel_at_period_end").default(false),
+  trialStart: timestamp("trial_start"),
+  trialEnd: timestamp("trial_end"),
   startDate: timestamp("start_date").default(sql`NOW()`),
   endDate: timestamp("end_date"),
   createdAt: timestamp("created_at").default(sql`NOW()`),
+  updatedAt: timestamp("updated_at").default(sql`NOW()`),
 });
 
 export const subscriptionPlans = pgTable("subscription_plans", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   planName: text("plan_name").notNull().unique(),
-  price: integer("price").notNull(),
+  price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+  interval: text("interval").notNull().default("month"), // 'month' or 'year'
   features: jsonb("features").notNull(),
+  limits: jsonb("limits").notNull(), // product limits, email limits, SMS limits etc
+  stripePriceId: text("stripe_price_id"),
+  stripeProductId: text("stripe_product_id"),
   isActive: boolean("is_active").notNull().default(true),
+  currency: text("currency").notNull().default("USD"),
+  description: text("description"),
   createdAt: timestamp("created_at").default(sql`NOW()`),
 });
 
@@ -109,12 +122,16 @@ export const usageStats = pgTable("usage_stats", {
   totalOrders: integer("total_orders").default(0),
   conversionRate: integer("conversion_rate").default(0), // stored as percentage * 100
   cartRecoveryRate: integer("cart_recovery_rate").default(0), // stored as percentage * 100
+  productsCount: integer("products_count").default(0),
   productsOptimized: integer("products_optimized").default(0),
   emailsSent: integer("emails_sent").default(0),
+  emailsRemaining: integer("emails_remaining").default(0),
   smsSent: integer("sms_sent").default(0),
+  smsRemaining: integer("sms_remaining").default(0),
   aiGenerationsUsed: integer("ai_generations_used").default(0),
   seoOptimizationsUsed: integer("seo_optimizations_used").default(0),
   lastUpdated: timestamp("last_updated").default(sql`NOW()`),
+  lastResetDate: timestamp("last_reset_date").default(sql`NOW()`),
 });
 
 export const activityLogs = pgTable("activity_logs", {
@@ -291,3 +308,73 @@ export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 export type StoreConnection = typeof storeConnections.$inferSelect;
 export type InsertStoreConnection = z.infer<typeof insertStoreConnectionSchema>;
+
+// Billing and invoice tables
+export const invoices = pgTable("invoices", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  subscriptionId: varchar("subscription_id").references(() => subscriptions.id),
+  stripeInvoiceId: text("stripe_invoice_id").unique(),
+  amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
+  currency: text("currency").notNull().default("USD"),
+  status: text("status").notNull(), // paid, open, void, uncollectible
+  invoiceNumber: text("invoice_number"),
+  invoiceUrl: text("invoice_url"),
+  pdfUrl: text("pdf_url"),
+  dueDate: timestamp("due_date"),
+  paidAt: timestamp("paid_at"),
+  createdAt: timestamp("created_at").default(sql`NOW()`),
+});
+
+export const paymentMethods = pgTable("payment_methods", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  stripePaymentMethodId: text("stripe_payment_method_id").notNull().unique(),
+  type: text("type").notNull(), // card, bank_account, etc.
+  cardBrand: text("card_brand"), // visa, mastercard, amex, etc.
+  cardLast4: text("card_last4"),
+  cardExpMonth: integer("card_exp_month"),
+  cardExpYear: integer("card_exp_year"),
+  isDefault: boolean("is_default").default(false),
+  createdAt: timestamp("created_at").default(sql`NOW()`),
+  updatedAt: timestamp("updated_at").default(sql`NOW()`),
+});
+
+export const billingHistory = pgTable("billing_history", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  subscriptionId: varchar("subscription_id").references(() => subscriptions.id),
+  invoiceId: varchar("invoice_id").references(() => invoices.id),
+  action: text("action").notNull(), // subscription_created, payment_succeeded, payment_failed, etc.
+  amount: numeric("amount", { precision: 10, scale: 2 }),
+  currency: text("currency").default("USD"),
+  status: text("status").notNull(),
+  description: text("description"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").default(sql`NOW()`),
+});
+
+// Billing table schemas
+export const insertInvoiceSchema = createInsertSchema(invoices).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertPaymentMethodSchema = createInsertSchema(paymentMethods).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertBillingHistorySchema = createInsertSchema(billingHistory).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Additional billing types
+export type Invoice = typeof invoices.$inferSelect;
+export type InsertInvoice = z.infer<typeof insertInvoiceSchema>;
+export type PaymentMethod = typeof paymentMethods.$inferSelect;
+export type InsertPaymentMethod = z.infer<typeof insertPaymentMethodSchema>;
+export type BillingHistory = typeof billingHistory.$inferSelect;
+export type InsertBillingHistory = z.infer<typeof insertBillingHistorySchema>;

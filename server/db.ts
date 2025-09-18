@@ -223,48 +223,118 @@ export async function seedSubscriptionPlans(): Promise<void> {
 
     const defaultPlans: InsertSubscriptionPlan[] = [
       {
-        planName: "Free Trial",
+        planName: "Forever Free",
         price: 0,
+        description: "Perfect for getting started with basic features",
         features: [
-          "Try all premium features free for 7 days",
-          "No credit card required (optional)",
-          "Cancel anytime before trial ends",
-          "Perfect for testing Zyra on your own store before upgrading"
+          "Up to 5 products",
+          "1 email per month",
+          "1 SMS per month", 
+          "Basic analytics",
+          "Community support"
         ],
+        limits: {
+          products: 5,
+          emails: 1,
+          sms: 1,
+          aiGenerations: 10,
+          seoOptimizations: 5
+        },
+        currency: "USD",
+        interval: "month"
       },
       {
         planName: "Starter",
-        price: 1500, // $15.00 in cents
+        price: 39,
+        description: "Great for small businesses ready to scale",
         features: [
-          "Optimize up to 100 products with AI-generated descriptions",
-          "Send up to 500 AI-crafted emails per month (upsells, receipts)",
-          "Access to SEO title + meta tag generator",
-          "AI image alt-text generator for accessibility + SEO boost",
-          "Basic analytics dashboard (track optimized products + email open rates)"
+          "Up to 50 products",
+          "CSV import/export",
+          "Shopify/WooCommerce sync",
+          "500 emails per month",
+          "200 SMS per month",
+          "Advanced analytics"
         ],
+        limits: {
+          products: 50,
+          emails: 500,
+          sms: 200,
+          aiGenerations: 1000,
+          seoOptimizations: 100
+        },
+        currency: "USD",
+        interval: "month"
       },
       {
         planName: "Pro",
-        price: 2500, // $25.00 in cents
+        price: 99,
+        description: "For growing businesses with unlimited potential",
         features: [
-          "Unlimited product optimizations (no limits on AI copy)",
-          "Send up to 2,000 AI-crafted emails per month",
-          "Recover abandoned carts with 500 SMS reminders per month",
-          "Advanced analytics dashboard (email CTR, SMS conversion, keyword density)",
-          "Priority AI processing → faster response + reduced wait times"
+          "Unlimited products",
+          "Smart suggestions",
+          "Rollback functionality",
+          "5,000 emails per month",
+          "1,000 SMS per month",
+          "Email segmentation",
+          "SEO tracker",
+          "A/B testing"
         ],
+        limits: {
+          products: -1, // unlimited
+          emails: 5000,
+          sms: 1000,
+          aiGenerations: -1,
+          seoOptimizations: -1
+        },
+        currency: "USD",
+        interval: "month"
       },
       {
         planName: "Growth",
-        price: 4900, // $49.00 in cents
+        price: 299,
+        description: "Everything in Pro plus advanced growth tools",
         features: [
-          "Unlimited everything → products, emails, and SMS recovery",
-          "Full analytics suite → keyword insights, revenue from emails/SMS, product optimization impact",
-          "A/B testing for AI-generated content → test multiple product descriptions, email subjects, and SMS messages",
-          "Premium template library → advanced email & SMS layouts designed to convert",
-          "Early access to new AI tools (before Starter/Pro users)",
-          "Priority support for faster help"
+          "Everything in Pro",
+          "Multi-language support",
+          "Ad export functionality",
+          "Content repurposing",
+          "25,000 emails per month",
+          "5,000 SMS per month",
+          "Revenue dashboard",
+          "White-label options"
         ],
+        limits: {
+          products: -1,
+          emails: 25000,
+          sms: 5000,
+          aiGenerations: -1,
+          seoOptimizations: -1
+        },
+        currency: "USD",
+        interval: "month"
+      },
+      {
+        planName: "Enterprise",
+        price: 999,
+        description: "Custom solutions for enterprise needs",
+        features: [
+          "Unlimited everything",
+          "Custom AI tuning",
+          "API access",
+          "SLA guarantee",
+          "Dedicated support manager",
+          "Custom integrations",
+          "Advanced reporting"
+        ],
+        limits: {
+          products: -1,
+          emails: -1,
+          sms: -1,
+          aiGenerations: -1,
+          seoOptimizations: -1
+        },
+        currency: "USD",
+        interval: "month"
       },
     ];
 
