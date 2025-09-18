@@ -217,7 +217,7 @@ export default function GrowthDashboard() {
                     {card.title}
                   </CardTitle>
                 </div>
-                <div className="text-right flex flex-col items-end gap-2">
+                <div className="text-right flex flex-col items-end gap-2 mt-[-13px] mb-[-13px] pt-[-10px] pb-[-10px] ml-[-15px] mr-[-15px] pl-[0px] pr-[0px] text-[12px]">
                   <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white leading-tight" data-testid={`text-value-${card.id}`}>
                     {card.value}
                   </div>
