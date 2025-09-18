@@ -203,7 +203,7 @@ export default function GrowthDashboard() {
         {analyticsCards.map((card) => (
           <Card 
             key={card.id} 
-            className="relative bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl transition-all duration-300 hover:scale-105 border-slate-700/50 hover:shadow-cyan-500/30"
+            className="relative bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl transition-all duration-300 hover:scale-105 border-slate-700/50 hover:shadow-cyan-500/30 flex flex-col h-full"
             data-testid={`card-analytics-${card.id}`}
           >
             <CardHeader className="pb-4">
@@ -234,7 +234,7 @@ export default function GrowthDashboard() {
                 {card.description}
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-0 pb-6 px-6">
+            <CardContent className="pt-0 pb-6 px-6 flex-1 flex flex-col justify-end">
               <Button
                 onClick={() => handleAnalyticsAction(card.id)}
                 disabled={analyticsMutation.isPending}
