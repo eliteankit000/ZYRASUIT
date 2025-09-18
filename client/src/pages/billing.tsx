@@ -180,10 +180,12 @@ export default function BillingPage() {
   };
 
   const formatPrice = (price: number, currency: string = 'USD') => {
+    // Convert cents to dollars
+    const priceInDollars = price / 100;
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency,
-    }).format(price);
+    }).format(priceInDollars);
   };
 
   const formatDate = (dateString: string) => {
@@ -206,7 +208,7 @@ export default function BillingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A0E16] via-[#1A1F2E] to-[#0A0E16] p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-black p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
