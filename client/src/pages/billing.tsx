@@ -208,7 +208,7 @@ export default function BillingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-black p-6">
+    <div className="min-h-screen p-6" style={{ background: 'linear-gradient(135deg, #021024 0%, #052659 50%, #5483B3 100%)' }}>
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
