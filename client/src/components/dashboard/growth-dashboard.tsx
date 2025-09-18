@@ -221,7 +221,7 @@ export default function GrowthDashboard() {
                   
                   <Badge 
                     variant="secondary" 
-                    className="transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-secondary/80 inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold bg-green-500/20 text-green-400 border border-transparent min-w-[80px] mt-[-13px] mb-[-13px] ml-[-3px] mr-[-3px] pl-[-12px] pr-[-12px] pt-[1px] pb-[1px]"
+                    className="transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-secondary/80 inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold bg-green-500/20 text-green-400 border border-transparent min-w-[80px] ml-[-3px] mr-[-3px] pl-[-12px] pr-[-12px] pt-[1px] pb-[1px] mt-[-44px] mb-[-44px]"
                     data-testid={`badge-trend-${card.id}`}
                   >
                     {card.change}
