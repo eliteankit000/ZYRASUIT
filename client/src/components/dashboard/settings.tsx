@@ -213,7 +213,7 @@ export default function Settings() {
             key={card.id} 
             className="relative bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl transition-all duration-300 hover:scale-105 border-slate-700/50 hover:shadow-cyan-500/30"
             data-testid={`card-settings-${card.id}`}
-            >
+          >
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-3">
