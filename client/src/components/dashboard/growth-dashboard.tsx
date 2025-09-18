@@ -218,9 +218,7 @@ export default function GrowthDashboard() {
                   </CardTitle>
                 </div>
                 <div className="text-right flex flex-col items-end gap-2 mt-[-13px] mb-[-13px] pt-[-10px] pb-[-10px] ml-[-15px] mr-[-15px] pl-[0px] pr-[0px] text-[12px]">
-                  <div className="sm:text-xl lg:text-2xl font-bold text-white text-[14px]" data-testid={`text-value-${card.id}`}>
-                    {card.value}
-                  </div>
+                  
                   <Badge 
                     variant="secondary" 
                     className="transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-secondary/80 inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold bg-green-500/20 text-green-400 border border-transparent min-w-[80px] mt-[-13px] mb-[-13px] ml-[-3px] mr-[-3px] pl-[-12px] pr-[-12px] pt-[1px] pb-[1px]"
