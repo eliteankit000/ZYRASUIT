@@ -262,20 +262,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Center Section - Navigation Shortcuts (Desktop Only) */}
-            <nav className="hidden md:flex items-center space-x-6 flex-1 justify-center">
-              <Button
-                variant="ghost"
-                onClick={() => setActiveTab("settings")}
-                className={`text-slate-200 hover:text-[#C1E8FF] transition-all duration-300 ease-in-out ${
-                  activeTab === "settings" ? "text-[#C1E8FF]" : ""
-                }`}
-                aria-label="Navigate to Settings"
-                data-testid="link-nav-settings"
-              >
-                Settings
-              </Button>
-            </nav>
+            
 
             {/* Right Section - Notifications + Profile */}
             <div className="flex items-center justify-end space-x-2 sm:space-x-4 flex-shrink-0">
