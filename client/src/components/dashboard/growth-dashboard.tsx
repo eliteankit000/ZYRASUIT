@@ -199,21 +199,21 @@ export default function GrowthDashboard() {
         </div>
       </div>
       {/* Analytics Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch auto-rows-fr">
         {analyticsCards.map((card) => (
           <Card 
             key={card.id} 
             className="relative bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl transition-all duration-300 hover:scale-105 border-slate-700/50 hover:shadow-cyan-500/30 flex flex-col h-full"
             data-testid={`card-analytics-${card.id}`}
           >
-            <CardHeader className="pb-4">
+            <CardHeader className="pb-4 min-h-[120px]">
               {/* Card Header with Consistent Flex Layout */}
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-3 min-h-[48px]">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center justify-center w-8 h-8 transition-all duration-300">
                     {card.icon}
                   </div>
-                  <CardTitle className="text-white font-bold text-sm sm:text-base lg:text-lg flex items-center" data-testid={`text-title-${card.id}`}>
+                  <CardTitle className="text-white font-bold text-sm sm:text-base lg:text-lg flex items-center whitespace-nowrap truncate" data-testid={`text-title-${card.id}`}>
                     {card.title}
                   </CardTitle>
                 </div>
@@ -223,22 +223,22 @@ export default function GrowthDashboard() {
                   </div>
                   <Badge 
                     variant="secondary" 
-                    className="inline-flex items-center border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-secondary/80 text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400 pt-[0px] pb-[0px] pl-[5px] pr-[5px] ml-[-6px] mr-[-6px]"
+                    className="inline-flex items-center whitespace-nowrap leading-none rounded-full px-2.5 py-0.5 text-xs font-semibold bg-green-500/20 text-green-400 border border-transparent"
                     data-testid={`badge-trend-${card.id}`}
                   >
                     {card.change}
                   </Badge>
                 </div>
               </div>
-              <CardDescription className="text-slate-300 text-xs sm:text-sm leading-relaxed ml-7 sm:ml-11" data-testid={`text-description-${card.id}`}>
+              <CardDescription className="text-slate-300 text-xs sm:text-sm leading-relaxed ml-7 sm:ml-11 min-h-[40px]" data-testid={`text-description-${card.id}`}>
                 {card.description}
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-0 pb-6 px-6 flex-1 flex flex-col justify-end">
+            <CardContent className="pt-0 pb-6 px-6 mt-auto">
               <Button
                 onClick={() => handleAnalyticsAction(card.id)}
                 disabled={analyticsMutation.isPending}
-                className="w-full font-medium transition-all duration-300 bg-[#C1E8FF] hover:bg-[#C1E8FF] text-indigo-900 hover:scale-105"
+                className="h-10 w-full font-medium transition-all duration-300 bg-[#C1E8FF] hover:bg-[#C1E8FF] text-indigo-900 hover:scale-105"
                 data-testid={`button-action-${card.id}`}
               >
                 {analyticsMutation.isPending ? "Loading..." : card.actionText}
