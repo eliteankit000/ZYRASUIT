@@ -316,7 +316,7 @@ export default function BillingPage() {
 
         {/* Tabs for different sections */}
         <Tabs defaultValue="plans" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
+          <TabsList className="grid w-full grid-cols-4 bg-[#041b3e]">
             <TabsTrigger value="plans" data-testid="tab-plans">Plans</TabsTrigger>
             <TabsTrigger value="billing" data-testid="tab-billing">Billing History</TabsTrigger>
             <TabsTrigger value="payment" data-testid="tab-payment">Payment Methods</TabsTrigger>
