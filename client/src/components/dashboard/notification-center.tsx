@@ -118,26 +118,6 @@ export default function NotificationCenter({ className }: NotificationCenterProp
 
   return (
     <div className={cn("relative", className)}>
-      {/* Bell Icon with Badge */}
-      <Button
-        ref={buttonRef}
-        variant="ghost"
-        size="icon"
-        onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          "relative h-10 w-10 flex items-center justify-center text-slate-200 hover:text-[#C1E8FF] hover:bg-white/10 transition-all duration-300 ease-in-out",
-          isOpen && "bg-white/10 text-[#C1E8FF]"
-        )}
-        data-testid="button-notification-center"
-      >
-        <Bell className="w-5 h-5" />
-        {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 min-w-[20px] h-5 flex items-center justify-center font-bold">
-            {unreadCount > 9 ? "9+" : unreadCount}
-          </span>
-        )}
-      </Button>
-
       {/* Dropdown Panel */}
       {isOpen && (
         <div
