@@ -332,10 +332,10 @@ export default function BillingPage() {
                 return (
                   <Card 
                     key={plan.id} 
-                    className={`relative transition-all duration-300 ${
+                    className={`relative bg-gradient-to-br from-[#021024] to-[#052659] rounded-2xl transition-all duration-300 hover:scale-105 border-slate-700/50 hover:shadow-cyan-500/30 ${
                       isCurrentPlan 
-                        ? 'border-[#C1E8FF] bg-gradient-to-br from-[#021024] to-[#052659]'
-                        : 'border-slate-700/50 bg-gradient-to-br from-[#0A0E16] to-[#1A1F2E] hover:border-slate-600'
+                        ? 'border-[#C1E8FF] shadow-cyan-500/50'
+                        : ''
                     }`}
                     data-testid={`card-plan-${plan.planName.toLowerCase().replace(' ', '-')}`}
                   >
@@ -375,10 +375,10 @@ export default function BillingPage() {
                         <Button
                           onClick={() => changePlanMutation.mutate(plan.id)}
                           disabled={changePlanMutation.isPending}
-                          className={`w-full font-medium transition-all duration-300 ${
+                          className={`w-full font-medium transition-all duration-300 hover:scale-105 ${
                             isUpgrade 
                               ? 'bg-green-600 hover:bg-green-700' 
-                              : 'bg-[#C1E8FF] hover:bg-[#A5D8FF] text-indigo-900'
+                              : 'bg-[#C1E8FF] hover:bg-[#C1E8FF] text-indigo-900'
                           }`}
                           data-testid={`button-change-plan-${plan.planName.toLowerCase().replace(' ', '-')}`}
                         >

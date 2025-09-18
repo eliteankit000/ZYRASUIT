@@ -181,7 +181,14 @@ export async function deleteSession(sessionId: string): Promise<void> {
 // Subscription plan operations
 export async function getSubscriptionPlans(): Promise<SubscriptionPlan[]> {
   return withErrorHandling(async () => {
-    return await db.select()
+    return await db.select({
+      id: subscriptionPlans.id,
+      planName: subscriptionPlans.planName,
+      price: subscriptionPlans.price,
+      features: subscriptionPlans.features,
+      isActive: subscriptionPlans.isActive,
+      createdAt: subscriptionPlans.createdAt
+    })
       .from(subscriptionPlans)
       .where(eq(subscriptionPlans.isActive, true))
       .orderBy(subscriptionPlans.price);
@@ -290,12 +297,24 @@ export async function seedSubscriptionPlans(): Promise<void> {
 
     // Check if plans already exist
     for (const planData of defaultPlans) {
-      const [existingPlan] = await db.select()
+      const [existingPlan] = await db.select({
+        id: subscriptionPlans.id,
+        planName: subscriptionPlans.planName,
+        price: subscriptionPlans.price,
+        features: subscriptionPlans.features,
+        isActive: subscriptionPlans.isActive,
+        createdAt: subscriptionPlans.createdAt
+      })
         .from(subscriptionPlans)
         .where(eq(subscriptionPlans.planName, planData.planName));
 
       if (!existingPlan) {
-        await db.insert(subscriptionPlans).values(planData);
+        // Only insert fields that exist in the database schema
+        await db.insert(subscriptionPlans).values({
+          planName: planData.planName,
+          price: planData.price,
+          features: planData.features
+        });
         console.log(`[DB] Created subscription plan: ${planData.planName}`);
       } else {
         console.log(`[DB] Subscription plan already exists: ${planData.planName}`);
