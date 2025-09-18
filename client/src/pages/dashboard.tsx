@@ -276,9 +276,6 @@ export default function Dashboard() {
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarImage src="" alt={user?.fullName || "User"} />
-                      <AvatarFallback className="bg-gradient-to-br from-[#C1E8FF] to-[#2563EB] text-[#021024] font-bold text-sm">
-                        {user?.fullName ? user.fullName.charAt(0).toUpperCase() : "U"}
-                      </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
